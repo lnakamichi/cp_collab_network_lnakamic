@@ -2,7 +2,7 @@ import string
 
 from nameparser import HumanName
 
-# classes taken from initial study
+# modified classes taken from initial study
 
 class Researcher:
     def __init__(self, name, id=None, cited_by=None, domain=None,
