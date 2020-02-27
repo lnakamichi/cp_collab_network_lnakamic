@@ -1,6 +1,7 @@
 import json
 import numpy as np
 import requests
+import time
 import pandas as pd
 
 from bs4 import BeautifulSoup
@@ -178,14 +179,14 @@ class MsAcademicScraper:
                     author['first_name'],
                     author['middle_name'],
                     author['last_name'],
-                    '',
+                    department if author['institution'] == CAL_POLY else '',
                     author['institution'],
                     author['ms_id']
                 ))
             collaboration_id = self.insert_collaboration_df(
-                    collaboration['title'],
-                    collaboration['year'],
-                    collaboration['data_source'])
+                collaboration['title'],
+                collaboration['year'],
+                collaboration['data_source'])
             for collaborator in collaborator_ids:
                 self.insert_authors_df(collaboration_id, collaborator)
 
@@ -228,11 +229,86 @@ MATH_PROFESSORS = [
     'Yoshinobu, Stan'
 ]
 
+BIO_PROFESSORS = [
+    'Adams, Nikki',
+    'Bean, Tim',
+    'Black, Michael',
+    'Blank, Jason',
+    'Clement, Sandra',
+    'Davidson, Jean',
+    'Fidopiastis, Pat',
+    'Francis, Clinton',
+    'Grossenbacher, Dena',
+    'Hardy, Kristin',
+    'Himelblau, Ed',
+    'Keeling, Elena',
+    'Knight, Charles',
+    'Kolluru, Gita',
+    'Lema, Sean',
+    'Liwanag, Heather',
+    'Martinez, Nathaniel',
+    'Pasulka, Alexis',
+    'Perrine, John',
+    'Rajakaruna, Nishi',
+    'Ritter, Matthew',
+    'Ruttenberg, Ben',
+    'Strand, Christy',
+    'Taylor, Emily',
+    'Tomanek, Lars',
+    'Villablanca, Francis',
+    'Vredevoe, Larisa',
+    'White, Crow',
+    'Winstead, Candace',
+    'Yep, Alejandra',
+    'Yeung, Marie',
+    'Yost, Jenn'
+]
+
+EE_PROFESSORS = [
+    'Dennis Derickson',
+    'Samuel Agbo',
+    'William Ahlgren',
+    'Dean Arakaki',
+    'Bridget Benson',
+    'David Braun',
+    'Joseph Callenes-Sloan',
+    'Andrew Danowitz',
+    'Fred DePiero',
+    'Dale Dolan',
+    'Ben Hawkins',
+    'Xiaomin Jin',
+    'Albert Liddicoat',
+    'Art MacCarley',
+    'James Mealy',
+    'Ahmad Nafisi',
+    'John Oliver',
+    'Wayne Pilkington',
+    'Majid Poshtan',
+    'Vladimir Prodanov',
+    'John Saghri',
+    'Ali Shaban',
+    'Lynne Slivovsky',
+    'Tina Smilkstein',
+    'Taufik Taufik',
+    'Xiao-Hua Yu',
+    'Jane Zhang'
+]
+
 scraper = MsAcademicScraper()
-for prof in MATH_PROFESSORS:
+# FOR MATH AND BIO
+# for prof in MATH_PROFESSORS:
+#     print(prof)
+#     name_list = prof.split(', ')
+#     scraper.scrape_for_researcher(name_list[1].lower(), None, name_list[0].lower(), 'math', CAL_POLY)
+#     time.sleep(0.5)
+
+# FOR EE
+for prof in EE_PROFESSORS:
     print(prof)
-    name_list = prof.split(', ')
-    scraper.scrape_for_researcher(name_list[1].lower(), None, name_list[0].lower(), 'math', CAL_POLY)
+    name_list = prof.split()
+    if len(name_list) == 2:
+        scraper.scrape_for_researcher(name_list[0], None, name_list[1], 'electrical engineering', CAL_POLY)
+    time.sleep(0.5)
 # after all for one department are done
 scraper.fold_researchers_df()
 
