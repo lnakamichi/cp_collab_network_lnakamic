@@ -179,7 +179,7 @@ class MsAcademicScraper:
                     author['first_name'],
                     author['middle_name'],
                     author['last_name'],
-                    department if author['institution'] == CAL_POLY else '',
+                    department if author['first_name'] == first_name.lower() and author['last_name'] == last_name.lower() else '',
                     author['institution'],
                     author['ms_id']
                 ))
@@ -193,7 +193,7 @@ class MsAcademicScraper:
 
 CAL_POLY = 'california polytechnic state university'
 
-MATH_PROFESSORS = [
+MATH_FACULTY = [
     'Bonini, Vincent',
     'Borzellino, Joe',
     'Brussel, Eric',
@@ -226,10 +226,27 @@ MATH_PROFESSORS = [
     'Stankus, Mark',
     'Sze, Lawrence',
     'White, Matthew',
-    'Yoshinobu, Stan'
+    'Yoshinobu, Stan',
+    # MATH LECTURERS
+    'Bishop, Rebecca',
+    'Chi, Haoyan',
+    'Elwood, Jason',
+    'Gervasi, Jeff',
+    'Grishchenko, Lana',
+    'Hahlbeck, Clint',
+    'Hesselgrave, Bill',
+    'Jenkin, Bryce',
+    'Kreider, Brandy',
+    'McCaughey, Tim',
+    'Quackenbush, Blaine',
+    'Robertson, Mike',
+    'Schuster, Sonja',
+    'Terry, Raymond',
+    'Watson, Sean',
+    'Yang, Fan'
 ]
 
-BIO_PROFESSORS = [
+BIO_FACULTY = [
     'Adams, Nikki',
     'Bean, Tim',
     'Black, Michael',
@@ -261,10 +278,33 @@ BIO_PROFESSORS = [
     'Winstead, Candace',
     'Yep, Alejandra',
     'Yeung, Marie',
-    'Yost, Jenn'
+    'Yost, Jenn',
+    # BIO LECTURERS
+    'Bunting, Jamie',
+    'Jones, Michael',
+    'Babu, Praveen',
+    'Bergen, Anne Marie',
+    'Debruhl, Heather',
+    'Goschke, Grace',
+    'Hendricks, Steve',
+    'Howes, Amy',
+    'Jew, Kara',
+    'Maj, Magdalena',
+    'May, Mellisa',
+    'McConnico, Laurie',
+    'Neal, Emily',
+    'Needles, Lisa',
+    'O\'Neill, Megan',
+    'Pisula, Anneka',
+    'Polacek, Kelly',
+    'Resner, Emily',
+    'Roest, Michele',
+    'Ryan, Sean',
+    'Trunzo, Juliana',
+    'VanderKelen, Jennifer'
 ]
 
-EE_PROFESSORS = [
+EE_FACULTY = [
     'Dennis Derickson',
     'Samuel Agbo',
     'William Ahlgren',
@@ -291,27 +331,60 @@ EE_PROFESSORS = [
     'Tina Smilkstein',
     'Taufik Taufik',
     'Xiao-Hua Yu',
-    'Jane Zhang'
+    'Jane Zhang',
+    # EE LECTURERS
+    'Kurt Behpour',
+    'Chuck Bland',
+    'Nazeih Botros',
+    'Mostafa Chinichian',
+    'Ali Dehghan Banadaki',
+    'Steve Dunton',
+    'Ron Eisworth',
+    'Mona El Helbawy',
+    'John Gerrity',
+    'Doug Hall',
+    'Paul Hummel',
+    'Marty Kaliski',
+    'Amin Malekmohammadi',
+    'Dan Malone',
+    'David McDonald',
+    'Clay McKell',
+    'Rich Murray',
+    'Maxwell Muscarella',
+    'Gary Perks',
+    'John Planck',
+    'Asit Rairkar',
+    'Joe Sparks',
+    'Hiren Trada',
+    'Siddharth Vyas',
+    'Michael Wilson'
 ]
 
 scraper = MsAcademicScraper()
 # FOR MATH AND BIO
-# for prof in MATH_PROFESSORS:
-#     print(prof)
-#     name_list = prof.split(', ')
-#     scraper.scrape_for_researcher(name_list[1].lower(), None, name_list[0].lower(), 'math', CAL_POLY)
-#     time.sleep(0.5)
+for prof in MATH_FACULTY:
+    print(prof)
+    name_list = prof.split(', ')
+    first_name_split = name_list[1].split()
+    if len(first_name_split) == 1:
+        scraper.scrape_for_researcher(name_list[1].lower(), None, name_list[0].lower(), 'math', CAL_POLY)
+    else:
+        scraper.scrape_for_researcher(first_name_split[0].lower(), ' '.join(first_name_split[1:]).lower(), name_list[0].lower(), 'math', CAL_POLY)
+    time.sleep(0.5)
 
 # FOR EE
-for prof in EE_PROFESSORS:
-    print(prof)
-    name_list = prof.split()
-    if len(name_list) == 2:
-        scraper.scrape_for_researcher(name_list[0], None, name_list[1], 'electrical engineering', CAL_POLY)
-    time.sleep(0.5)
-# after all for one department are done
-scraper.fold_researchers_df()
+# for prof in EE_PROFESSORS:
+#     print(prof)
+#     name_list = prof.split()
+#     if len(name_list) == 2:
+#         scraper.scrape_for_researcher(name_list[0].lower(), None, name_list[1].lower(), 'electrical engineering', CAL_POLY)
+#     elif len(name_list) == 3:
+#         scraper.scrape_for_researcher(name_list[0].lower(), name_list[1].lower(), name_list[2].lower(), 'electrical engineering', CAL_POLY)
+#     time.sleep(0.5)
+# # after all for one department are done
+# scraper.fold_researchers_df()
+# print(scraper.researchers_df['department'].value_counts())
 
-cnx, cur = init_connection_with_json("./login.json")
-upload_dfs(scraper.collaborations_df, scraper.researchers_df, scraper.authors_df, cur, cnx)
-close_connection(cnx, cur)
+# cnx, cur = init_connection_with_json("./login.json")
+# upload_dfs(scraper.collaborations_df, scraper.researchers_df, scraper.authors_df, cur, cnx)
+# close_connection(cnx, cur)
