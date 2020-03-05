@@ -18,6 +18,9 @@ CREATE TABLE cpcollabnet2019.Researchers2 (
     department VARCHAR(50),
     institution VARCHAR(50),
     ms_id VARCHAR(20),
+    hired_year YEAR,
+    cal_poly_position VARCHAR(50),
+    education VARCHAR(500),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
