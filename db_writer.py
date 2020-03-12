@@ -31,20 +31,28 @@ def insert_collaborations_operation(title, year, data_source):
             (title, year, data_source))
 
 
-def insert_researchers_operation_short(first_name, middle_name, last_name, institution, ms_id):
+def insert_researchers_operation_short(first_name, middle_name, last_name, institution, ms_id,
+                                       hired_year, cal_poly_position, education):
     if middle_name is None:
-        return ('INSERT INTO Researchers2 (first_name, last_name, institution, ms_id) VALUES (%s, %s, %s, %s)',
-                (first_name, last_name, institution, ms_id))
+        return ('INSERT INTO Researchers2' +
+                '(first_name, last_name, institution, ms_id, hired_year, cal_poly_position, education)' +
+                'VALUES (%s, %s, %s, %s, %s, %s, %s)',
+                (first_name, last_name, institution, ms_id, hired_year, cal_poly_position, education))
     else:
-        return ('INSERT INTO Researchers2 (first_name, middle_name, last_name, institution, ms_id)' +
-                ' VALUES (%s, %s, %s, %s, %s)',
-                (first_name, middle_name, last_name, institution, ms_id))
+        return ('INSERT INTO Researchers2' +
+                '(first_name, middle_name, last_name, institution, ms_id, hired_year, cal_poly_position, education)' +
+                ' VALUES (%s, %s, %s, %s, %s, %s, %s, %s)',
+                (first_name, middle_name, last_name, institution, ms_id, hired_year, cal_poly_position, education))
 
 
-def insert_researchers_operation(first_name, middle_name, last_name, department, institution, ms_id):
-    return ('INSERT INTO Researchers2 (first_name, middle_name, last_name, department, institution, ms_id)' +
-            ' VALUES (%s, %s, %s, %s, %s, %s)',
-            (first_name, middle_name, last_name, department, institution, ms_id))
+def insert_researchers_operation(first_name, middle_name, last_name, department, institution, ms_id, hired_year,
+                                 cal_poly_position, education):
+    return ('INSERT INTO Researchers2' +
+            '(first_name, middle_name, last_name, department, institution, ms_id, hired_year,' +
+            'cal_poly_position, education)' +
+            ' VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)',
+            (first_name, middle_name, last_name, department, institution, ms_id,
+             hired_year, cal_poly_position, education))
 
 
 def insert_authors_operation(cid, rid):
@@ -84,7 +92,10 @@ def upload_dfs(collaborations_df, researchers_df, authors_df, cursor, connection
             researcher['last_name'],
             researcher['department'],
             researcher['institution'],
-            researcher['ms_id'])
+            researcher['ms_id'],
+            researcher['hired_year'],
+            researcher['cal_poly_position'],
+            researcher['education'])
         actual_rid = execute_insert_operation(insert_researcher_op, cursor, connection)
         temp_to_rid[researcher['rid_temp']] = actual_rid
     for index, collaboration in collaborations_df.iterrows():

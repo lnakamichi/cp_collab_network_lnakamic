@@ -2,10 +2,12 @@ import json
 import numpy as np
 import requests
 import time
+import datetime
 import pandas as pd
 
 from bs4 import BeautifulSoup
 from db_writer import *
+from calpoly_faculty_directory_scraper import *
 
 
 def get_ms_query(name):
@@ -43,9 +45,9 @@ def get_first_nonempty_string(series):
     for index, value in series.items():
         if isinstance(value, int):
             return value
-        if len(value) > 0:
+        if value is not None and len(value) > 0:
             return value
-    return ''
+    return None
 
 
 class MsAcademicScraper:
@@ -61,7 +63,8 @@ class MsAcademicScraper:
         self.collaborations_df = pd.DataFrame(
             columns=['cid_temp', 'title', 'year', 'data_source'])
         self.researchers_df = pd.DataFrame(
-            columns=['rid_temp', 'first_name', 'middle_name', 'last_name', 'department', 'institution', 'ms_id'])
+            columns=['rid_temp', 'first_name', 'middle_name', 'last_name', 'department', 'institution', 'ms_id',
+                     'hired_year', 'cal_poly_position', 'education'])
         self.authors_df = pd.DataFrame(
             columns=['cid_temp', 'rid_temp'])
 
@@ -103,7 +106,29 @@ class MsAcademicScraper:
             'last_name': [last_name],
             'department': [department or ''],
             'institution': [institution or ''],
-            'ms_id': [ms_id or '']
+            'ms_id': [ms_id or ''],
+            'hired_year': [None],
+            'cal_poly_position': [None],
+            'education': [None]
+        })
+        self.researchers_df = self.researchers_df.append(row, ignore_index=True)
+        self.rid_temp = cur_rid + 1
+        return cur_rid
+
+    def insert_calpoly_researcher_df(self, first_name, middle_name, last_name, department, institution, ms_id,
+                                     hired_year, cal_poly_position, education):
+        cur_rid = self.rid_temp
+        row = pd.DataFrame.from_dict({
+            'rid_temp': [cur_rid],
+            'first_name': [first_name],
+            'middle_name': [middle_name or ''],
+            'last_name': [last_name],
+            'department': [department or ''],
+            'institution': [institution or ''],
+            'ms_id': [ms_id or ''],
+            'hired_year': [hired_year or None],
+            'cal_poly_position': [cal_poly_position or None],
+            'education': [education or None]
         })
         self.researchers_df = self.researchers_df.append(row, ignore_index=True)
         self.rid_temp = cur_rid + 1
@@ -139,14 +164,21 @@ class MsAcademicScraper:
             department = get_first_nonempty_string(researcher_entries['department'])
             institution = get_first_nonempty_string(researcher_entries['institution'])
             ms_id = get_first_nonempty_string(researcher_entries['ms_id'])
+            hired_year = get_first_nonempty_string(researcher_entries['hired_year'])
+            cal_poly_position = get_first_nonempty_string(researcher_entries['cal_poly_position'])
+            education = get_first_nonempty_string(researcher_entries['education'])
             self.researchers_df.drop(researcher_entries.index, inplace=True)
-            new_rid = self.insert_researcher_df(
+            new_rid = self.insert_calpoly_researcher_df(
                 first_name,
                 middle_name,
                 last_name,
                 department,
                 institution,
-                ms_id)
+                ms_id,
+                hired_year,
+                cal_poly_position,
+                education
+            )
             self.authors_df['rid_temp'] = np.where(
                 np.isin(self.authors_df['rid_temp'], researcher_entries['rid_temp'].tolist()),
                 new_rid,
@@ -154,7 +186,8 @@ class MsAcademicScraper:
 
     def scrape_for_researcher(self, first_name, middle_name, last_name, department, institution):
         name = ' '.join(filter(lambda n: n is not None, [first_name, middle_name, last_name]))
-        base_researcher_id = None
+        faculty_dict = get_calpoly_faculty_dict()
+        # base_researcher_id = None
         collaborations = self.fill_with_ms(name)
         if len(collaborations) == 0:
             print('No collaborations for {}'.format(name))
@@ -175,14 +208,29 @@ class MsAcademicScraper:
             collaborator_ids = []
             for author in collaboration['authors']:
                 # if author['first_name'] != first_name and author['last_name'] != last_name:
-                collaborator_ids.append(self.insert_researcher_df(
-                    author['first_name'],
-                    author['middle_name'],
-                    author['last_name'],
-                    department if author['first_name'] == first_name.lower() and author['last_name'] == last_name.lower() else '',
-                    author['institution'],
-                    author['ms_id']
-                ))
+                if (author['first_name'], author['last_name']) in faculty_dict.keys():
+                    faculty_dict_info = faculty_dict[(author['first_name'], author['last_name'])]
+                    collaborator_ids.append(self.insert_calpoly_researcher_df(
+                        author['first_name'],
+                        author['middle_name'],
+                        author['last_name'],
+                        department if author['first_name'] == first_name.lower() and author[
+                            'last_name'] == last_name.lower() else '',
+                        author['institution'],
+                        author['ms_id'],
+                        faculty_dict_info[0],
+                        faculty_dict_info[1],
+                        faculty_dict_info[2]
+                    ))
+                else:
+                    collaborator_ids.append(self.insert_researcher_df(
+                        author['first_name'],
+                        author['middle_name'],
+                        author['last_name'],
+                        department if author['first_name'] == first_name.lower() and author['last_name'] == last_name.lower() else '',
+                        author['institution'],
+                        author['ms_id']
+                    ))
             collaboration_id = self.insert_collaboration_df(
                 collaboration['title'],
                 collaboration['year'],
@@ -362,7 +410,7 @@ EE_FACULTY = [
 
 scraper = MsAcademicScraper()
 # FOR MATH AND BIO
-for prof in MATH_FACULTY:
+for prof in MATH_FACULTY[:5]:
     print(prof)
     name_list = prof.split(', ')
     first_name_split = name_list[1].split()
@@ -385,6 +433,12 @@ for prof in MATH_FACULTY:
 # scraper.fold_researchers_df()
 # print(scraper.researchers_df['department'].value_counts())
 
-# cnx, cur = init_connection_with_json("./login.json")
-# upload_dfs(scraper.collaborations_df, scraper.researchers_df, scraper.authors_df, cur, cnx)
-# close_connection(cnx, cur)
+# SAVE DF's
+timestamp = datetime.datetime.fromtimestamp(time.time()).isoformat()
+scraper.researchers_df.to_csv('./{0}_researchers.csv'.format(timestamp))
+scraper.authors_df.to_csv('./{0}_authors.csv'.format(timestamp))
+scraper.collaborations_df.to_csv('./{0}_collaborations.csv'.format(timestamp))
+
+cnx, cur = init_connection_with_json("./login.json")
+upload_dfs(scraper.collaborations_df, scraper.researchers_df, scraper.authors_df, cur, cnx)
+close_connection(cnx, cur)

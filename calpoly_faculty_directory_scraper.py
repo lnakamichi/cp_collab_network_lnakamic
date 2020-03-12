@@ -27,10 +27,10 @@ def separate_names(name_string):
     middle_name = ''
     if len(second_split) > 1:
         middle_name = second_split[1].replace('.', '')
-    return first_name, middle_name, last_name
+    return first_name.lower(), middle_name.lower(), last_name.lower()
 
 
-def get_calpoly_faculty_df():
+def get_calpoly_faculty_dict():
     url = "http://catalog.calpoly.edu/facultyandstaff/#facultystaffemeritustext"
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")
@@ -43,7 +43,7 @@ def get_calpoly_faculty_df():
                     'Biological Sciences' in block.text or
                     'Electrical Engineering' in block.text),
             faculty_block.find_all('tr')[1:]))
-    df_rows = []
+    name_to_info = {}
     for row in row_list:
         name_hire_department_block = row.find('td', {'class': 'column0'}).text
         name_hire_department_list = split_name_hire_department(name_hire_department_block)
@@ -53,16 +53,17 @@ def get_calpoly_faculty_df():
         department = name_hire_department_list[2].strip()
         position = row.find('td', {'class': 'column1'}).text
         education = row.find('td', {'class': 'column2'}).text
-        df_rows.append(
-            {
-                'first_name': first_name,
-                'middle_name': middle_name,
-                'last_name': last_name,
-                'hire_year': hire_year,
-                'department': department,
-                'position': position,
-                'education': education
-            }
-        )
+        # df_rows.append(
+        #     {
+        #         'first_name': first_name.lower(),
+        #         'middle_name': middle_name.lower(),
+        #         'last_name': last_name.lower(),
+        #         'hire_year': hire_year,
+        #         'department': department,
+        #         'position': position,
+        #         'education': education
+        #     }
+        # )
+        name_to_info[(first_name, last_name)] = (hire_year, position, education)
 
-    return pd.DataFrame(df_rows)
+    return name_to_info
