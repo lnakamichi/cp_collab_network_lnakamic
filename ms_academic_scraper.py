@@ -409,8 +409,8 @@ EE_FACULTY = [
 ]
 
 scraper = MsAcademicScraper()
-# FOR MATH AND BIO
-for prof in MATH_FACULTY[:5]:
+
+for prof in MATH_FACULTY:
     print(prof)
     name_list = prof.split(', ')
     first_name_split = name_list[1].split()
@@ -420,24 +420,33 @@ for prof in MATH_FACULTY[:5]:
         scraper.scrape_for_researcher(first_name_split[0].lower(), ' '.join(first_name_split[1:]).lower(), name_list[0].lower(), 'math', CAL_POLY)
     time.sleep(0.5)
 
-# FOR EE
-# for prof in EE_PROFESSORS:
-#     print(prof)
-#     name_list = prof.split()
-#     if len(name_list) == 2:
-#         scraper.scrape_for_researcher(name_list[0].lower(), None, name_list[1].lower(), 'electrical engineering', CAL_POLY)
-#     elif len(name_list) == 3:
-#         scraper.scrape_for_researcher(name_list[0].lower(), name_list[1].lower(), name_list[2].lower(), 'electrical engineering', CAL_POLY)
-#     time.sleep(0.5)
-# # after all for one department are done
-# scraper.fold_researchers_df()
-# print(scraper.researchers_df['department'].value_counts())
+for prof in BIO_FACULTY:
+    print(prof)
+    name_list = prof.split(', ')
+    first_name_split = name_list[1].split()
+    if len(first_name_split) == 1:
+        scraper.scrape_for_researcher(name_list[1].lower(), None, name_list[0].lower(), 'biology', CAL_POLY)
+    else:
+        scraper.scrape_for_researcher(first_name_split[0].lower(), ' '.join(first_name_split[1:]).lower(), name_list[0].lower(), 'biology', CAL_POLY)
+    time.sleep(0.5)
 
-# SAVE DF's
-timestamp = datetime.datetime.fromtimestamp(time.time()).isoformat()
-scraper.researchers_df.to_csv('./{0}_researchers.csv'.format(timestamp))
-scraper.authors_df.to_csv('./{0}_authors.csv'.format(timestamp))
-scraper.collaborations_df.to_csv('./{0}_collaborations.csv'.format(timestamp))
+for prof in EE_FACULTY:
+    print(prof)
+    name_list = prof.split()
+    if len(name_list) == 2:
+        scraper.scrape_for_researcher(name_list[0].lower(), None, name_list[1].lower(), 'electrical engineering', CAL_POLY)
+    elif len(name_list) == 3:
+        scraper.scrape_for_researcher(name_list[0].lower(), name_list[1].lower(), name_list[2].lower(), 'electrical engineering', CAL_POLY)
+    time.sleep(0.5)
+
+scraper.fold_researchers_df()
+print(scraper.researchers_df['department'].value_counts())
+#
+# # SAVE DF's
+# timestamp = datetime.datetime.fromtimestamp(time.time()).isoformat()
+# scraper.researchers_df.to_csv('./data/{0}_researchers.csv'.format(timestamp), index=False)
+# scraper.authors_df.to_csv('./data/{0}_authors.csv'.format(timestamp), index=False)
+# scraper.collaborations_df.to_csv('./data/{0}_collaborations.csv'.format(timestamp), index=False)
 
 cnx, cur = init_connection_with_json("./login.json")
 upload_dfs(scraper.collaborations_df, scraper.researchers_df, scraper.authors_df, cur, cnx)
