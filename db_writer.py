@@ -55,6 +55,13 @@ def insert_researchers_operation(first_name, middle_name, last_name, department,
              hired_year, cal_poly_position, education))
 
 
+def insert_researchers_operation_minimum(first_name, last_name):
+    return ('INSERT INTO Researchers2' +
+            '(first_name, last_name)' +
+            ' VALUES (%s, %s)',
+            (first_name, last_name))
+
+
 def insert_authors_operation(cid, rid):
     return ('INSERT INTO Authors2 (cid, rid) VALUES (%s, %s)',
             (cid, rid))
@@ -66,6 +73,30 @@ def select_all_from_table(table_name, cursor):
         return cursor.fetchall()
     except mysql.connector.Error as error:
         print('Unable to execute select operation for table ({0}): {1}'.format(table_name, error))
+        raise Exception('MySQL operations could not be executed')
+
+
+def select_collaborations_from_department(department_name, cursor):
+    try:
+        cursor.execute('SELECT cpcollabnet2019.Researchers2.first_name, ' +
+                       'cpcollabnet2019.Researchers2.last_name, title FROM (cpcollabnet2019.Researchers2 RIGHT JOIN ' +
+                       'cpcollabnet2019.Authors2 ON cpcollabnet2019.Researchers2.rid = cpcollabnet2019.Authors2.rid) ' +
+                       'LEFT JOIN cpcollabnet2019.Collaborations2 ON cpcollabnet2019.Authors2.cid = ' +
+                       'cpcollabnet2019.Collaborations2.cid WHERE cpcollabnet2019.Researchers2.department = "{0}"'
+                       .format(department_name))
+        return cursor.fetchall()
+    except mysql.connector.Error as error:
+        print('Unable to execute select operation for department ({0}): {1}'.format(department_name, error))
+        raise Exception('MySQL operations could not be executed')
+
+
+def find_rid_by_name(first_name, last_name, cursor):
+    try:
+        cursor.execute('SELECT rid FROM cpcollabnet2019.Researchers2 WHERE ' +
+                       'first_name = "' + first_name + '" AND last_name = "' + last_name + '"')
+        return cursor.fetchall()
+    except mysql.connector.Error as error:
+        print('Unable to execute select operation for researcher ({0} {1}): {2}'.format(first_name, last_name, error))
         raise Exception('MySQL operations could not be executed')
 
 
