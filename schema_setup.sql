@@ -1,6 +1,6 @@
 CREATE TABLE cpcollabnet2019.Collaborations2 (
     cid INTEGER NOT NULL AUTO_INCREMENT,
-    title VARCHAR(100) NOT NULL,
+    title VARCHAR(500) NOT NULL,
     year YEAR,
     data_source VARCHAR(100) NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,

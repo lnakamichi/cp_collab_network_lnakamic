@@ -78,7 +78,10 @@ class MsAcademicScraper:
             soup = BeautifulSoup(first_interpretation['parse'], 'html.parser')
             element = soup.find('attr', {'name': 'academic#AA.AuN'})
             try:
-                canonical_name = element['canonical']
+                if element is None:
+                    canonical_name = name
+                else:
+                    canonical_name = element['canonical']
             except KeyError:
                 canonical_name = element.get_text()
             canonical_name = canonical_name.replace(' ', '+')
@@ -441,8 +444,8 @@ for prof in EE_FACULTY:
 
 scraper.fold_researchers_df()
 print(scraper.researchers_df['department'].value_counts())
-#
-# # SAVE DF's
+
+# SAVE DF's
 # timestamp = datetime.datetime.fromtimestamp(time.time()).isoformat()
 # scraper.researchers_df.to_csv('./data/{0}_researchers.csv'.format(timestamp), index=False)
 # scraper.authors_df.to_csv('./data/{0}_authors.csv'.format(timestamp), index=False)

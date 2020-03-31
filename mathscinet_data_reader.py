@@ -18,13 +18,13 @@ def process_publication_row_list(rows):
 def extract_first_name(name):
     first_middle = name.split(', ')[1]
     if ' ' in first_middle:
-        return first_middle.split()[0].lower()
+        return first_middle.split()[0].lower().strip()
     else:
-        return first_middle.lower()
+        return first_middle.lower().strip()
 
 
 def extract_last_name(name):
-    return name.split(', ')[0].lower()
+    return name.split(', ')[0].lower().strip()
 
 
 def title_missing(title, publications):
