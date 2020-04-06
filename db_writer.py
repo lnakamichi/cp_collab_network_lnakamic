@@ -31,6 +31,11 @@ def insert_collaborations_operation(title, year, data_source):
             (title, year, data_source))
 
 
+def insert_collaborations_operation_with_type(title, year, data_source, type):
+    return ('INSERT INTO Collaborations2 (title, year, data_source, type) VALUES (%s, %s, %s, %s)',
+            (title, year, data_source, type))
+
+
 def insert_researchers_operation_short(first_name, middle_name, last_name, institution, ms_id,
                                        hired_year, cal_poly_position, education):
     if middle_name is None:

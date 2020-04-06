@@ -3,6 +3,7 @@ CREATE TABLE cpcollabnet2019.Collaborations2 (
     title VARCHAR(500) NOT NULL,
     year YEAR,
     data_source VARCHAR(100) NOT NULL,
+    type VARCHAR(50),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
