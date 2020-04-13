@@ -230,7 +230,8 @@ class MsAcademicScraper:
                         author['first_name'],
                         author['middle_name'],
                         author['last_name'],
-                        department if author['first_name'] == first_name.lower() and author['last_name'] == last_name.lower() else '',
+                        department if author['first_name'] == first_name.lower() and author[
+                            'last_name'] == last_name.lower() else '',
                         author['institution'],
                         author['ms_id']
                     ))
@@ -411,35 +412,97 @@ EE_FACULTY = [
     'Michael Wilson'
 ]
 
+CS_FACULTY = [
+    'Chris Lupo',
+    'Paul Anderson',
+    'Hisham Assal',
+    'John Bellardo',
+    'John Clements',
+    'Bruno da Silva',
+    'Bruce DeBruhl',
+    'Alex Dekhtyar',
+    'Christian Eckhardt',
+    'Sussan Einakian',
+    'Davide Falessi',
+    'Dongfeng Fang',
+    'Sara Ford',
+    'Kris Fox',
+    'Hasmik Gharibyan',
+    'Paul Hatalsky',
+    'Michael Haungs',
+    'Irene Humer',
+    'David Janzen',
+    'Daniel Kauffman',
+    'Aaron Keen',
+    'Foaad Khosmood',
+    'Toshihiro Kuboi',
+    'Franz Kurfess',
+    'Kurt Mammen',
+    'Andrew Migler',
+    'Theresa Migler',
+    'Kirsten Mork',
+    'Phillip Nico',
+    'Maria Pantoja',
+    'David Parkinson',
+    'Zachary Peterson',
+    'John Planck',
+    'Michael Reynosa',
+    'Nicholas Sakellariou',
+    'John Seng',
+    'Erin Sheets',
+    'Christopher Siu',
+    'Hugh Smith',
+    'Clint Staley',
+    'Lubomir Stanchev',
+    'Clark Turner',
+    'Ignatios Vakalis',
+    'Michael Van De Vanter',
+    'Jonathan Ventura',
+    'Kurt Voelker',
+    'Zoë Wood',
+    'Julie Workman'
+]
+
 scraper = MsAcademicScraper()
 
-for prof in MATH_FACULTY:
-    print(prof)
-    name_list = prof.split(', ')
-    first_name_split = name_list[1].split()
-    if len(first_name_split) == 1:
-        scraper.scrape_for_researcher(name_list[1].lower(), None, name_list[0].lower(), 'math', CAL_POLY)
-    else:
-        scraper.scrape_for_researcher(first_name_split[0].lower(), ' '.join(first_name_split[1:]).lower(), name_list[0].lower(), 'math', CAL_POLY)
-    time.sleep(0.5)
+# for prof in MATH_FACULTY:
+#     print(prof)
+#     name_list = prof.split(', ')
+#     first_name_split = name_list[1].split()
+#     if len(first_name_split) == 1:
+#         scraper.scrape_for_researcher(name_list[1].lower(), None, name_list[0].lower(), 'math', CAL_POLY)
+#     else:
+#         scraper.scrape_for_researcher(first_name_split[0].lower(), ' '.join(first_name_split[1:]).lower(),
+#                                       name_list[0].lower(), 'math', CAL_POLY)
+#     time.sleep(0.5)
+#
+# for prof in BIO_FACULTY:
+#     print(prof)
+#     name_list = prof.split(', ')
+#     first_name_split = name_list[1].split()
+#     if len(first_name_split) == 1:
+#         scraper.scrape_for_researcher(name_list[1].lower(), None, name_list[0].lower(), 'biology', CAL_POLY)
+#     else:
+#         scraper.scrape_for_researcher(first_name_split[0].lower(), ' '.join(first_name_split[1:]).lower(),
+#                                       name_list[0].lower(), 'biology', CAL_POLY)
+#     time.sleep(0.5)
+#
+# for prof in EE_FACULTY:
+#     print(prof)
+#     name_list = prof.split()
+#     if len(name_list) == 2:
+#         scraper.scrape_for_researcher(name_list[0].lower(), None, name_list[1].lower(), 'electrical engineering',
+#                                       CAL_POLY)
+#     elif len(name_list) == 3:
+#         scraper.scrape_for_researcher(name_list[0].lower(), name_list[1].lower(), name_list[2].lower(),
+#                                       'electrical engineering', CAL_POLY)
+#     time.sleep(0.5)
 
-for prof in BIO_FACULTY:
-    print(prof)
-    name_list = prof.split(', ')
-    first_name_split = name_list[1].split()
-    if len(first_name_split) == 1:
-        scraper.scrape_for_researcher(name_list[1].lower(), None, name_list[0].lower(), 'biology', CAL_POLY)
-    else:
-        scraper.scrape_for_researcher(first_name_split[0].lower(), ' '.join(first_name_split[1:]).lower(), name_list[0].lower(), 'biology', CAL_POLY)
-    time.sleep(0.5)
-
-for prof in EE_FACULTY:
+for prof in CS_FACULTY:
     print(prof)
     name_list = prof.split()
-    if len(name_list) == 2:
-        scraper.scrape_for_researcher(name_list[0].lower(), None, name_list[1].lower(), 'electrical engineering', CAL_POLY)
-    elif len(name_list) == 3:
-        scraper.scrape_for_researcher(name_list[0].lower(), name_list[1].lower(), name_list[2].lower(), 'electrical engineering', CAL_POLY)
+    scraper.scrape_for_researcher(name_list[0].lower(), None, ' '.join(name_list[1:]).lower(), 'computer science',
+                                  CAL_POLY)
     time.sleep(0.5)
 
 scraper.fold_researchers_df()

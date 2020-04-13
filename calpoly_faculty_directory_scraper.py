@@ -41,7 +41,8 @@ def get_calpoly_faculty_dict():
             lambda block: (
                     'Mathematics' in block.text or
                     'Biological Sciences' in block.text or
-                    'Electrical Engineering' in block.text),
+                    'Electrical Engineering' in block.text or
+                    'Computer Science' in block.text),
             faculty_block.find_all('tr')[1:]))
     name_to_info = {}
     for row in row_list:
