@@ -118,6 +118,15 @@ def execute_insert_operation(operation_param_tuple, cursor, connection, commit=T
         raise Exception('MySQL operations could not be executed')
 
 
+def execute_select_operation(operation_param_tuple, cursor):
+    try:
+        cursor.execute(operation_param_tuple[0], operation_param_tuple[1])
+        return cursor.fetchall()
+    except mysql.connector.Error as error:
+        print('Unable to execute select operation: {}'.format(error))
+        raise Exception('MySQL operations could not be executed')
+
+
 def upload_dfs(collaborations_df, researchers_df, authors_df, cursor, connection):
     temp_to_rid = {}
     temp_to_cid = {}
