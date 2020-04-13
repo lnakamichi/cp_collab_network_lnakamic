@@ -37,8 +37,8 @@ def name_to_tuple(name_string):
         return name_string, name_string
     elif len(name_list) == 2:
         return name_list[0], name_list[1]
-    elif len(name_list) == 3:
-        return name_list[0], name_list[2]
+    # elif len(name_list) == 3:
+    #     return name_list[0], name_list[2]
     else:
         return name_list[0], ' '.join(name_list[1:])
 
@@ -169,14 +169,65 @@ EE_FACULTY = [
     'Michael Wilson'
 ]
 
+CS_FACULTY = [
+    'Chris Lupo',
+    'Paul Anderson',
+    'Hisham Assal',
+    'John Bellardo',
+    'John Clements',
+    'Bruno da Silva',
+    'Bruce DeBruhl',
+    'Alex Dekhtyar',
+    'Christian Eckhardt',
+    'Sussan Einakian',
+    'Davide Falessi',
+    'Dongfeng Fang',
+    'Sara Ford',
+    'Kris Fox',
+    'Hasmik Gharibyan',
+    'Paul Hatalsky',
+    'Michael Haungs',
+    'Irene Humer',
+    'David Janzen',
+    'Daniel Kauffman',
+    'Aaron Keen',
+    'Foaad Khosmood',
+    'Toshihiro Kuboi',
+    'Franz Kurfess',
+    'Kurt Mammen',
+    'Andrew Migler',
+    'Theresa Migler',
+    'Kirsten Mork',
+    'Phillip Nico',
+    'Maria Pantoja',
+    'David Parkinson',
+    'Zachary Peterson',
+    'John Planck',
+    'Michael Reynosa',
+    'Nicholas Sakellariou',
+    'John Seng',
+    'Erin Sheets',
+    'Christopher Siu',
+    'Hugh Smith',
+    'Clint Staley',
+    'Lubomir Stanchev',
+    'Clark Turner',
+    'Ignatios Vakalis',
+    'Michael Van De Vanter',
+    'Jonathan Ventura',
+    'Kurt Voelker',
+    'Zoë Wood',
+    'Julie Workman'
+]
+
 cnx, cur = init_connection_with_json("./login.json")
 
 scraper = IEEEXploreScraper()
 
 name_to_publications = process_publication_row_list(
-    select_collaborations_from_department('electrical engineering', cur))
+    select_collaborations_from_department('computer science', cur))
 
-for name in EE_FACULTY:
+for name in CS_FACULTY:
     name_tuple = name_to_tuple(name)
     if name_tuple in name_to_publications.keys():
         scraper.scrape_for_researcher(name, name_to_publications[name_tuple])
