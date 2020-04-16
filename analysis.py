@@ -178,14 +178,65 @@ EE_FACULTY = [
     'Michael Wilson'
 ]
 
+CS_FACULTY = [
+    'Chris Lupo',
+    'Paul Anderson',
+    'Hisham Assal',
+    'John Bellardo',
+    'John Clements',
+    'Bruno da Silva',
+    'Bruce DeBruhl',
+    'Alex Dekhtyar',
+    'Christian Eckhardt',
+    'Sussan Einakian',
+    'Davide Falessi',
+    'Dongfeng Fang',
+    'Sara Ford',
+    'Kris Fox',
+    'Hasmik Gharibyan',
+    'Paul Hatalsky',
+    'Michael Haungs',
+    'Irene Humer',
+    'David Janzen',
+    'Daniel Kauffman',
+    'Aaron Keen',
+    'Foaad Khosmood',
+    'Toshihiro Kuboi',
+    'Franz Kurfess',
+    'Kurt Mammen',
+    'Andrew Migler',
+    'Theresa Migler',
+    'Kirsten Mork',
+    'Phillip Nico',
+    'Maria Pantoja',
+    'David Parkinson',
+    'Zachary Peterson',
+    'John Planck',
+    'Michael Reynosa',
+    'Nicholas Sakellariou',
+    'John Seng',
+    'Erin Sheets',
+    'Christopher Siu',
+    'Hugh Smith',
+    'Clint Staley',
+    'Lubomir Stanchev',
+    'Clark Turner',
+    'Ignatios Vakalis',
+    'Michael Van De Vanter',
+    'Jonathan Ventura',
+    'Kurt Voelker',
+    'Zoë Wood',
+    'Julie Workman'
+]
+
 degrees = []
-for researcher in EE_FACULTY:
+for researcher in CS_FACULTY:
     name_split = researcher.split()
-    print("researcher: {0}".format(researcher))
-    degree = get_degree(name_split[0].lower().strip(), name_split[1].lower().strip())
-    print(degree)
+    degree = get_degree(name_split[0].lower().strip(), ' '.join(name_split[1:]).lower().strip())
+    if degree > 20:
+        print("researcher: {0}".format(researcher))
+        print(degree)
     degrees.append(degree)
 
 for degree in set(degrees):
     print("{0}: {1}".format(degree, degrees.count(degree)))
-close_connection(cnx, cur)
