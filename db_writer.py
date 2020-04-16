@@ -105,6 +105,16 @@ def find_rid_by_name(first_name, last_name, cursor):
         raise Exception('MySQL operations could not be executed')
 
 
+def delete_collaboration(cid, cursor, connection):
+    try:
+        cursor.execute('DELETE FROM cpcollabnet2019.Authors2 WHERE cid={}'.format(cid))
+        cursor.execute('DELETE FROM cpcollabnet2019.Collaborations2 WHERE cid={}'.format(cid))
+        connection.commit()
+    except mysql.connector.Error as error:
+        print('Unable to delete collaboration with cid {0}: {1}'.format(cid, error))
+        raise Exception('MySQL operations could not be executed')
+
+
 def execute_insert_operation(operation_param_tuple, cursor, connection, commit=True):
     try:
         cursor.execute(operation_param_tuple[0], operation_param_tuple[1])
