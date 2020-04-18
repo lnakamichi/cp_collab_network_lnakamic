@@ -115,6 +115,24 @@ def delete_collaboration(cid, cursor, connection):
         raise Exception('MySQL operations could not be executed')
 
 
+def update_author_rid(old_rid, new_rid, cursor, connection):
+    try:
+        cursor.execute('UPDATE cpcollabnet2019.Authors2 SET rid={0} WHERE rid={1}'.format(new_rid, old_rid))
+        connection.commit()
+    except mysql.connector.Error as error:
+        print('Unable to update authors with (old rid, new rid) ({0}, {1}): {2}'.format(old_rid, new_rid, error))
+        raise Exception('MySQL operations could not be executed')
+
+
+def delete_researcher(rid, cursor, connection):
+    try:
+        cursor.execute('DELETE FROM cpcollabnet2019.Researchers2 WHERE rid={}'.format(rid))
+        connection.commit()
+    except mysql.connector.Error as error:
+        print('Unable to delete researcher with rid {0}: {1}'.format(rid, error))
+        raise Exception('MySQL operations could not be executed')
+
+
 def execute_insert_operation(operation_param_tuple, cursor, connection, commit=True):
     try:
         cursor.execute(operation_param_tuple[0], operation_param_tuple[1])
