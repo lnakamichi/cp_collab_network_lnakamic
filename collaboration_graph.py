@@ -29,15 +29,41 @@ def generate_graph():
     return graph
 
 
+def get_color_for_dept(dept):
+    if dept == 'math':
+        # yellow
+        return '#ffff00'
+    elif dept == 'electrical engineering':
+        # blue
+        return '#0050db'
+    elif dept == 'biology':
+        # green
+        return '#37941b'
+    elif dept == 'computer science':
+        # red
+        return '#ff0000'
+    elif dept == 'computer science, electrical engineering':
+        # purple
+        return '#b300ff'
+    else:
+        # gray
+        return '#757573'
+
+
 class CollaborationGraph:
     def __init__(self):
         self.graph = generate_graph()
 
     def generate_visualization(self):
-        print('Generating Visual in collaboration_graph.html')
+        print('Generating Visual in ./data/collaboration_graph_colored.html')
         visual = Network()
-        visual.from_nx(self.graph)
-        visual.show('collaboration_graph.html')
+        nodes = self.graph.nodes.data()
+        edges = self.graph.edges.data('year')
+        for node, data_dict in nodes:
+            visual.add_node(node, title=data_dict['name'], color=get_color_for_dept(data_dict['department']))
+        for edge in edges:
+            visual.add_edge(edge[0], edge[1], title=edge[2])
+        visual.show('./data/collaboration_graph_colored.html')
 
 
 print(time.strftime("%H:%M:%S", time.localtime()))
