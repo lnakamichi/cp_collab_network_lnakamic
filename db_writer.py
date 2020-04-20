@@ -123,6 +123,18 @@ def update_author_rid(old_rid, new_rid, cursor, connection):
         print('Unable to update authors with (old rid, new rid) ({0}, {1}): {2}'.format(old_rid, new_rid, error))
         raise Exception('MySQL operations could not be executed')
 
+
+def select_all_data(cursor):
+    try:
+        cursor.execute('SELECT department, institution, first_name, middle_name, last_name, title, year FROM ' +
+                       'Authors2 LEFT JOIN Researchers2 ON Authors2.rid = Researchers2.rid LEFT JOIN Collaborations2 ' +
+                       'ON Collaborations2.cid = Authors2.cid')
+        return cursor.fetchall()
+    except mysql.connector.Error as error:
+        print('Unable to execute select all data: {0}'.format(error))
+        raise Exception('MySQL operations could not be executed')
+
+
 def select_collaborating_authors(cursor):
     try:
         cursor.execute('SELECT a1.rid, a2.rid, a1.cid FROM Authors2 AS a1 JOIN Authors2 AS a2 ON a1.cid = a2.cid AND '
