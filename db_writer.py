@@ -135,6 +135,51 @@ def select_all_data(cursor):
         raise Exception('MySQL operations could not be executed')
 
 
+def select_computer_science_rids(cursor):
+    try:
+        cursor.execute('SELECT DISTINCT rid FROM Authors2 WHERE cid IN ' +
+                       '(SELECT DISTINCT cid FROM Authors2 LEFT JOIN Researchers2 ON Authors2.rid=Researchers2.rid ' +
+                       'WHERE department="computer science" OR department="computer science, electrical engineering")')
+        return cursor.fetchall()
+    except mysql.connector.Error as error:
+        print('Unable to execute select all data: {0}'.format(error))
+        raise Exception('MySQL operations could not be executed')
+
+
+def select_electrical_engineering_rids(cursor):
+    try:
+        cursor.execute('SELECT DISTINCT rid FROM Authors2 WHERE cid IN ' +
+                       '(SELECT DISTINCT cid FROM Authors2 LEFT JOIN Researchers2 ON Authors2.rid=Researchers2.rid ' +
+                       'WHERE department="electrical engineering" OR ' +
+                       'department="computer science, electrical engineering")')
+        return cursor.fetchall()
+    except mysql.connector.Error as error:
+        print('Unable to execute select all data: {0}'.format(error))
+        raise Exception('MySQL operations could not be executed')
+
+
+def select_math_rids(cursor):
+    try:
+        cursor.execute('SELECT DISTINCT rid FROM Authors2 WHERE cid IN ' +
+                       '(SELECT DISTINCT cid FROM Authors2 LEFT JOIN Researchers2 ON Authors2.rid=Researchers2.rid ' +
+                       'WHERE department="math")')
+        return cursor.fetchall()
+    except mysql.connector.Error as error:
+        print('Unable to execute select all data: {0}'.format(error))
+        raise Exception('MySQL operations could not be executed')
+
+
+def select_biology_rids(cursor):
+    try:
+        cursor.execute('SELECT DISTINCT rid FROM Authors2 WHERE cid IN ' +
+                       '(SELECT DISTINCT cid FROM Authors2 LEFT JOIN Researchers2 ON Authors2.rid=Researchers2.rid ' +
+                       'WHERE department="biology")')
+        return cursor.fetchall()
+    except mysql.connector.Error as error:
+        print('Unable to execute select all data: {0}'.format(error))
+        raise Exception('MySQL operations could not be executed')
+
+
 def select_collaborating_authors(cursor):
     try:
         cursor.execute('SELECT a1.rid, a2.rid, a1.cid FROM Authors2 AS a1 JOIN Authors2 AS a2 ON a1.cid = a2.cid AND '
