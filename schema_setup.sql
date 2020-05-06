@@ -24,6 +24,8 @@ CREATE TABLE cpcollabnet2019.Researchers2 (
     education VARCHAR(500),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    gender VARCHAR(15),
+    gender_accuracy INTEGER
 
     PRIMARY KEY (rid)
 );

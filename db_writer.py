@@ -124,6 +124,16 @@ def update_author_rid(old_rid, new_rid, cursor, connection):
         raise Exception('MySQL operations could not be executed')
 
 
+def update_gender(rid, gender, accuracy, cursor, connection):
+    try:
+        cursor.execute('UPDATE cpcollabnet2019.Researchers2 SET gender="{0}", gender_accuracy={1} WHERE rid={2}'.format(
+            gender, accuracy, rid))
+        connection.commit()
+    except mysql.connector.Error as error:
+        print('Unable to update gender with for rid {0}: {1}'.format(rid, error))
+        raise Exception('MySQL operations could not be executed')
+
+
 def select_all_data(cursor):
     try:
         cursor.execute('SELECT department, institution, first_name, middle_name, last_name, title, year FROM ' +
