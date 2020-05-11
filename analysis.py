@@ -1,4 +1,8 @@
+import matplotlib
 import pandas as pd
+import numpy as np
+import matplotlib.mlab as mlab
+import matplotlib.pyplot as plt
 
 from db_writer import *
 
@@ -229,14 +233,25 @@ CS_FACULTY = [
     'Julie Workman'
 ]
 
-degrees = []
-for researcher in CS_FACULTY:
-    name_split = researcher.split()
-    degree = get_degree(name_split[0].lower().strip(), ' '.join(name_split[1:]).lower().strip())
-    if degree > 20:
-        print("researcher: {0}".format(researcher))
-        print(degree)
-    degrees.append(degree)
+# degrees = []
+# for researcher in CS_FACULTY:
+#     name_split = researcher.split()
+#     degree = get_degree(name_split[0].lower().strip(), ' '.join(name_split[1:]).lower().strip())
+#     if degree > 20:
+#         print("researcher: {0}".format(researcher))
+#         print(degree)
+#     degrees.append(degree)
+#
+# for degree in set(degrees):
+#     print("{0}: {1}".format(degree, degrees.count(degree)))
 
-for degree in set(degrees):
-    print("{0}: {1}".format(degree, degrees.count(degree)))
+# Generate Degree distribution plot
+cnx, cur = init_connection_with_json("./login.json")
+t = list(filter(lambda x: x < 150, map(lambda t: t[0], select_degrees(cur))))
+num_bins = 25
+n, bins, patches = plt.hist(t, num_bins, facecolor='blue', alpha=0.5)
+plt.xlabel(r"Number of Publications")
+plt.ylabel(r"Number of Researchers")
+
+plt.savefig('./data/degree_distribution.jpg')
+close_connection(cnx, cur)

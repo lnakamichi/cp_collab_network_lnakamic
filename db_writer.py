@@ -1,7 +1,7 @@
 import mysql.connector
 import json
 
-HOST = "cpcollabnetwork8.cn244vkxrxzn.us-west-1.rds.amazonaws.com"
+HOST = "cpcollabnetwork10.cn244vkxrxzn.us-west-1.rds.amazonaws.com"
 DB = 'cpcollabnet2019'
 
 
@@ -197,6 +197,23 @@ def select_collaborating_authors(cursor):
         return cursor.fetchall()
     except mysql.connector.Error as error:
         print('Unable to execute select operation for authors and collaborations: {0}'.format(error))
+        raise Exception('MySQL operations could not be executed')
+
+
+def select_degrees(cursor):
+    try:
+        cursor.execute('SELECT COUNT(DISTINCT Authors2.cid) FROM cpcollabnet2019.Authors2 ' +
+                       'LEFT JOIN cpcollabnet2019.Collaborations2 ON Authors2.cid =  Collaborations2.cid ' +
+                       'WHERE (type IS NULL OR (NOT type="conferences")) AND rid IN ' +
+                       '(SELECT rid FROM cpcollabnet2019.Researchers2 WHERE department = "electrical engineering" OR ' +
+                       'department = "computer science, electrical engineering" OR ' +
+                       'department = "computer science" OR ' +
+                       'department = "biology" OR ' +
+                       'department = "math") ' +
+                       'GROUP BY rid')
+        return cursor.fetchall()
+    except mysql.connector.Error as error:
+        print('Unable to execute select degrees: {0}'.format(error))
         raise Exception('MySQL operations could not be executed')
 
 
