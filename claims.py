@@ -1,20 +1,16 @@
+import statistics
 import warnings
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import statistics
 
+from collaboration_graph import *
 from db_writer import *
 
 # Men tend to have more co-authors
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
-
-BIO = 0
-CS = 1
-EE = 2
-MATH = 3
 
 cnx, cur = init_connection_with_json('./login.json')
 
@@ -130,3 +126,43 @@ def claim_2():
     plt.tight_layout()
     plt.legend(loc='best')
     plt.savefig('./data/claim2.jpg')
+
+
+def claim_3():
+    bio_m = list(filter(lambda rid: get_gender(rid) == 'male', bio_rids))
+    bio_f = list(filter(lambda rid: get_gender(rid) == 'female', bio_rids))
+    cs_m = list(filter(lambda rid: get_gender(rid) == 'male', cs_rids))
+    cs_f = list(filter(lambda rid: get_gender(rid) == 'female', cs_rids))
+    ee_m = list(filter(lambda rid: get_gender(rid) == 'male', ee_rids))
+    ee_f = list(filter(lambda rid: get_gender(rid) == 'female', ee_rids))
+    math_m = list(filter(lambda rid: get_gender(rid) == 'male', math_rids))
+    math_f = list(filter(lambda rid: get_gender(rid) == 'female', math_rids))
+
+    G = CollaborationGraph()
+
+    ind = np.arange(4)
+    width = 0.35
+    department = ('Biology', 'Computer Science', 'Electrical Engineering', 'Math')
+
+    m_avgs = [
+        G.avg_clustering_coefficient_by_rid(bio_m),
+        G.avg_clustering_coefficient_by_rid(cs_m),
+        G.avg_clustering_coefficient_by_rid(ee_m),
+        G.avg_clustering_coefficient_by_rid(math_m)
+    ]
+    f_avgs = [
+        G.avg_clustering_coefficient_by_rid(bio_f),
+        G.avg_clustering_coefficient_by_rid(cs_f),
+        G.avg_clustering_coefficient_by_rid(ee_f),
+        G.avg_clustering_coefficient_by_rid(math_f)
+    ]
+
+    plt.bar(ind, m_avgs, width, label="Men")
+    plt.bar(ind + width, f_avgs, width, label='Women')
+
+    plt.ylabel('Average local clustering coefficient')
+    plt.title('Average Local Clustering Coefficient by Department')
+    plt.xticks(ind + width / 2, department, rotation=40)
+    plt.tight_layout()
+    plt.legend(loc='best')
+    plt.savefig('./data/claim3.jpg')

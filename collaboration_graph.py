@@ -4,7 +4,6 @@ import time
 from db_writer import *
 from pyvis.network import Network
 
-
 MATH = 0
 BIOLOGY = 1
 COMPUTER_SCIENCE = 2
@@ -91,11 +90,14 @@ class CollaborationGraph:
         self.electrical_engineering_graph = self.graph.subgraph(get_rids_for_department(ELECTRICAL_ENGINEERING)).copy()
         self.computer_science_graph = self.graph.subgraph(get_rids_for_department(COMPUTER_SCIENCE)).copy()
 
+    def avg_clustering_coefficient_by_rid(self, rids):
+        return sum(nx.clustering(self.graph, nodes=rids).values()) / len(rids)
 
-print(time.strftime("%H:%M:%S", time.localtime()))
-g = CollaborationGraph()
-print(time.strftime("%H:%M:%S", time.localtime()))
-generate_visualization(g.math_graph, './data/math_network.html')
-generate_visualization(g.computer_science_graph, './data/computer_science_network.html')
-generate_visualization(g.biology_graph, './data/biology_network.html')
-generate_visualization(g.electrical_engineering_graph, './data/electrical_engineering_network.html')
+
+# print(time.strftime("%H:%M:%S", time.localtime()))
+# g = CollaborationGraph()
+# print(time.strftime("%H:%M:%S", time.localtime()))
+# generate_visualization(g.math_graph, './data/math_network.html')
+# generate_visualization(g.computer_science_graph, './data/computer_science_network.html')
+# generate_visualization(g.biology_graph, './data/biology_network.html')
+# generate_visualization(g.electrical_engineering_graph, './data/electrical_engineering_network.html')
