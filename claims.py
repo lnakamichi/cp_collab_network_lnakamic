@@ -166,3 +166,57 @@ def claim_3():
     plt.tight_layout()
     plt.legend(loc='best')
     plt.savefig('./data/claim3.jpg')
+
+
+def get_female_to_male_ratio(rids):
+    female_count = 0
+    male_count = 0
+    for rid in rids:
+        gender = get_gender(rid)
+        if gender == 'male':
+            male_count = male_count + 1
+        elif gender == 'female':
+            female_count = female_count + 1
+    if male_count == 0:
+        return 1.0
+    else:
+        return female_count / male_count
+
+
+def claim_4():
+    bio_m = list(filter(lambda rid: get_gender(rid) == 'male', bio_rids))
+    bio_f = list(filter(lambda rid: get_gender(rid) == 'female', bio_rids))
+    cs_m = list(filter(lambda rid: get_gender(rid) == 'male', cs_rids))
+    cs_f = list(filter(lambda rid: get_gender(rid) == 'female', cs_rids))
+    ee_m = list(filter(lambda rid: get_gender(rid) == 'male', ee_rids))
+    ee_f = list(filter(lambda rid: get_gender(rid) == 'female', ee_rids))
+    math_m = list(filter(lambda rid: get_gender(rid) == 'male', math_rids))
+    math_f = list(filter(lambda rid: get_gender(rid) == 'female', math_rids))
+
+    bio_m_count = statistics.mean(list(map(get_female_to_male_ratio, get_rid_to_collaborators(bio_m).values())))
+    bio_f_count = statistics.mean(list(map(get_female_to_male_ratio, get_rid_to_collaborators(bio_f).values())))
+    cs_m_count = statistics.mean(list(map(get_female_to_male_ratio, get_rid_to_collaborators(cs_m).values())))
+    cs_f_count = statistics.mean(list(map(get_female_to_male_ratio, get_rid_to_collaborators(cs_f).values())))
+    ee_m_count = statistics.mean(list(map(get_female_to_male_ratio, get_rid_to_collaborators(ee_m).values())))
+    ee_f_count = statistics.mean(list(map(get_female_to_male_ratio, get_rid_to_collaborators(ee_f).values())))
+    math_m_count = statistics.mean(list(map(get_female_to_male_ratio, get_rid_to_collaborators(math_m).values())))
+    math_f_count = statistics.mean(list(map(get_female_to_male_ratio, get_rid_to_collaborators(math_f).values())))
+
+    ind = np.arange(4)
+    width = 0.35
+    department = ('Biology', 'Computer Science', 'Electrical Engineering', 'Math')
+
+    m_avgs = [bio_m_count, cs_m_count, ee_m_count, math_m_count]
+    f_avgs = [bio_f_count, cs_f_count, ee_f_count, math_f_count]
+    plt.bar(ind, m_avgs, width, label="Men")
+    plt.bar(ind + width, f_avgs, width, label='Women')
+
+    plt.ylabel('Female to male collaborator ratio')
+    plt.title('Female to Male Collaborator Ratio by Department')
+    plt.xticks(ind + width / 2, department, rotation=40)
+    plt.tight_layout()
+    plt.legend(loc='best')
+    plt.savefig('./data/claim4.jpg')
+
+claim_4()
+
