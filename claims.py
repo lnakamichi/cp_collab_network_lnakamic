@@ -22,6 +22,10 @@ researchers_df = pd.DataFrame(raw_researchers, columns=['rid', 'department', 'in
                                                         'first_name', 'middle_name', 'last_name', 'ms_id', 'hired_year',
                                                         'cal_poly_position', 'education', 'gender', 'gender_accuracy'])
 
+raw_collaborations = select_all_from_table('Collaborations2', cur)
+collaborations_df = pd.DataFrame(raw_collaborations, columns=['cid', 'title', 'year', 'created_at', 'update_at',
+                                                              'data_source', 'type'])
+
 close_connection(cnx, cur)
 
 bio_rids = researchers_df[researchers_df['department'] == 'biology']['rid']
@@ -168,7 +172,7 @@ def claim_3():
     plt.savefig('./data/claim3.jpg')
 
 
-def get_female_to_male_ratio(rids):
+def get_gender_to_gender_ratio(rids, female_to_male):
     female_count = 0
     male_count = 0
     for rid in rids:
@@ -177,10 +181,17 @@ def get_female_to_male_ratio(rids):
             male_count = male_count + 1
         elif gender == 'female':
             female_count = female_count + 1
-    if male_count == 0:
-        return 1.0
+    print('{0} : {1}'.format(female_count, male_count))
+    if female_to_male:
+        if male_count == 0:
+            return 1.0
+        else:
+            return female_count / male_count
     else:
-        return female_count / male_count
+        if female_count == 0:
+            return 1.0
+        else:
+            return male_count / female_count
 
 
 def claim_4():
@@ -193,14 +204,22 @@ def claim_4():
     math_m = list(filter(lambda rid: get_gender(rid) == 'male', math_rids))
     math_f = list(filter(lambda rid: get_gender(rid) == 'female', math_rids))
 
-    bio_m_count = statistics.mean(list(map(get_female_to_male_ratio, get_rid_to_collaborators(bio_m).values())))
-    bio_f_count = statistics.mean(list(map(get_female_to_male_ratio, get_rid_to_collaborators(bio_f).values())))
-    cs_m_count = statistics.mean(list(map(get_female_to_male_ratio, get_rid_to_collaborators(cs_m).values())))
-    cs_f_count = statistics.mean(list(map(get_female_to_male_ratio, get_rid_to_collaborators(cs_f).values())))
-    ee_m_count = statistics.mean(list(map(get_female_to_male_ratio, get_rid_to_collaborators(ee_m).values())))
-    ee_f_count = statistics.mean(list(map(get_female_to_male_ratio, get_rid_to_collaborators(ee_f).values())))
-    math_m_count = statistics.mean(list(map(get_female_to_male_ratio, get_rid_to_collaborators(math_m).values())))
-    math_f_count = statistics.mean(list(map(get_female_to_male_ratio, get_rid_to_collaborators(math_f).values())))
+    bio_m_count = statistics.mean(list(map(lambda rids: get_gender_to_gender_ratio(rids, False),
+                                           get_rid_to_collaborators(bio_m).values())))
+    bio_f_count = statistics.mean(list(map(lambda rids: get_gender_to_gender_ratio(rids, True),
+                                           get_rid_to_collaborators(bio_f).values())))
+    cs_m_count = statistics.mean(list(map(lambda rids: get_gender_to_gender_ratio(rids, False),
+                                          get_rid_to_collaborators(cs_m).values())))
+    cs_f_count = statistics.mean(list(map(lambda rids: get_gender_to_gender_ratio(rids, True),
+                                          get_rid_to_collaborators(cs_f).values())))
+    ee_m_count = statistics.mean(list(map(lambda rids: get_gender_to_gender_ratio(rids, False),
+                                          get_rid_to_collaborators(ee_m).values())))
+    ee_f_count = statistics.mean(list(map(lambda rids: get_gender_to_gender_ratio(rids, True),
+                                          get_rid_to_collaborators(ee_f).values())))
+    math_m_count = statistics.mean(list(map(lambda rids: get_gender_to_gender_ratio(rids, False),
+                                            get_rid_to_collaborators(math_m).values())))
+    math_f_count = statistics.mean(list(map(lambda rids: get_gender_to_gender_ratio(rids, True),
+                                            get_rid_to_collaborators(math_f).values())))
 
     ind = np.arange(4)
     width = 0.35
@@ -211,12 +230,12 @@ def claim_4():
     plt.bar(ind, m_avgs, width, label="Men")
     plt.bar(ind + width, f_avgs, width, label='Women')
 
-    plt.ylabel('Female to male collaborator ratio')
-    plt.title('Female to Male Collaborator Ratio by Department')
+    plt.ylabel('Same gender collaborator ratio')
+    plt.title('Same Gender Collaborator Ratio by Department')
     plt.xticks(ind + width / 2, department, rotation=40)
     plt.tight_layout()
     plt.legend(loc='best')
     plt.savefig('./data/claim4.jpg')
 
-claim_4()
 
+claim_4()
