@@ -103,8 +103,10 @@ def claim_2():
     math_m = list(filter(lambda rid: get_gender(rid) == 'male', math_rids))
     math_f = list(filter(lambda rid: get_gender(rid) == 'female', math_rids))
 
-    bio_m_count = statistics.mean(list(map(lambda cids: get_num_repeats(cids), get_rid_to_collaborators(bio_m).values())))
-    bio_f_count = statistics.mean(list(map(lambda cids: get_num_repeats(cids), get_rid_to_collaborators(bio_f).values())))
+    bio_m_count = statistics.mean(
+        list(map(lambda cids: get_num_repeats(cids), get_rid_to_collaborators(bio_m).values())))
+    bio_f_count = statistics.mean(
+        list(map(lambda cids: get_num_repeats(cids), get_rid_to_collaborators(bio_f).values())))
     cs_m_count = statistics.mean(list(map(lambda cids: get_num_repeats(cids), get_rid_to_collaborators(cs_m).values())))
     cs_f_count = statistics.mean(list(map(lambda cids: get_num_repeats(cids), get_rid_to_collaborators(cs_f).values())))
     ee_m_count = statistics.mean(list(map(lambda cids: get_num_repeats(cids), get_rid_to_collaborators(ee_m).values())))
@@ -238,4 +240,65 @@ def claim_4():
     plt.savefig('./data/claim4.jpg')
 
 
-claim_4()
+def get_publications_list(rid):
+    return set(authors_df[authors_df['rid'] == rid]['cid'].unique())
+
+
+def get_publication_year(cid):
+    year = collaborations_df[collaborations_df['cid'] == cid].iloc[0]['year']
+    return year
+
+
+def claim_5():
+    bio_m = list(filter(lambda rid: get_gender(rid) == 'male', bio_rids))
+    bio_f = list(filter(lambda rid: get_gender(rid) == 'female', bio_rids))
+    cs_m = list(filter(lambda rid: get_gender(rid) == 'male', cs_rids))
+    cs_f = list(filter(lambda rid: get_gender(rid) == 'female', cs_rids))
+    ee_m = list(filter(lambda rid: get_gender(rid) == 'male', ee_rids))
+    ee_f = list(filter(lambda rid: get_gender(rid) == 'female', ee_rids))
+    math_m = list(filter(lambda rid: get_gender(rid) == 'male', math_rids))
+    math_f = list(filter(lambda rid: get_gender(rid) == 'female', math_rids))
+
+    bio_m_first = statistics.mean(
+        list(map(lambda rid: 2020 - min(set(map(get_publication_year, get_publications_list(rid)))),
+                 bio_m)))
+    bio_f_first = statistics.mean(
+        list(map(lambda rid: 2020 - min(set(map(get_publication_year, get_publications_list(rid)))),
+                 bio_f)))
+    cs_m_first = statistics.mean(
+        list(map(lambda rid: 2020 - min(set(map(get_publication_year, get_publications_list(rid)))),
+                 cs_m)))
+    cs_f_first = statistics.mean(
+        list(map(lambda rid: 2020 - min(set(map(get_publication_year, get_publications_list(rid)))),
+                 cs_f)))
+    ee_m_first = statistics.mean(
+        list(map(lambda rid: 2020 - min(set(map(get_publication_year, get_publications_list(rid)))),
+                 ee_m)))
+    ee_f_first = statistics.mean(
+        list(map(lambda rid: 2020 - min(set(map(get_publication_year, get_publications_list(rid)))),
+                 ee_f)))
+    math_m_first = statistics.mean(
+        list(map(lambda rid: 2020 - min(set(map(get_publication_year, get_publications_list(rid)))),
+                 math_m)))
+    math_f_first = statistics.mean(
+        list(map(lambda rid: 2020 - min(set(map(get_publication_year, get_publications_list(rid)))),
+                 math_f)))
+
+    ind = np.arange(4)
+    width = 0.35
+    department = ('Biology', 'Computer Science', 'Electrical Engineering', 'Math')
+
+    m_avgs = [bio_m_first, cs_m_first, ee_m_first, math_m_first]
+    f_avgs = [bio_f_first, cs_f_first, ee_f_first, math_f_first]
+    plt.bar(ind, m_avgs, width, label="Men")
+    plt.bar(ind + width, f_avgs, width, label='Women')
+
+    plt.ylabel('Average publication history length (years)')
+    plt.title('Average Publication History Length by Department')
+    plt.xticks(ind + width / 2, department, rotation=40)
+    plt.tight_layout()
+    plt.legend(loc='best')
+    plt.savefig('./data/claim5.jpg')
+
+
+claim_5()
