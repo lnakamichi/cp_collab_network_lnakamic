@@ -337,4 +337,60 @@ def claim_6():
     plt.savefig('./data/claim6.jpg')
 
 
-claim_6()
+def is_intramural(rid):
+    return researchers_df[researchers_df['rid'] == rid].iloc[0]['institution'] == 'california polytechnic state ' \
+                                                                                  'university'
+
+
+def get_percent_true(bool_list):
+    if len(bool_list) == 0:
+        return 0.0
+    else:
+        return sum(bool_list) / len(bool_list)
+
+
+def claim_7():
+    bio_m = list(filter(lambda rid: get_gender(rid) == 'male', bio_rids))
+    bio_f = list(filter(lambda rid: get_gender(rid) == 'female', bio_rids))
+    cs_m = list(filter(lambda rid: get_gender(rid) == 'male', cs_rids))
+    cs_f = list(filter(lambda rid: get_gender(rid) == 'female', cs_rids))
+    ee_m = list(filter(lambda rid: get_gender(rid) == 'male', ee_rids))
+    ee_f = list(filter(lambda rid: get_gender(rid) == 'female', ee_rids))
+    math_m = list(filter(lambda rid: get_gender(rid) == 'male', math_rids))
+    math_f = list(filter(lambda rid: get_gender(rid) == 'female', math_rids))
+
+    bio_m_count = statistics.mean(list(map(lambda rids: get_percent_true(list(map(is_intramural, rids))),
+                                           get_rid_to_collaborators(bio_m).values())))
+    bio_f_count = statistics.mean(list(map(lambda rids: get_percent_true(list(map(is_intramural, rids))),
+                                           get_rid_to_collaborators(bio_f).values())))
+    cs_m_count = statistics.mean(list(map(lambda rids: get_percent_true(list(map(is_intramural, rids))),
+                                          get_rid_to_collaborators(cs_m).values())))
+    cs_f_count = statistics.mean(list(map(lambda rids: get_percent_true(list(map(is_intramural, rids))),
+                                          get_rid_to_collaborators(cs_f).values())))
+    ee_m_count = statistics.mean(list(map(lambda rids: get_percent_true(list(map(is_intramural, rids))),
+                                          get_rid_to_collaborators(ee_m).values())))
+    ee_f_count = statistics.mean(list(map(lambda rids: get_percent_true(list(map(is_intramural, rids))),
+                                          get_rid_to_collaborators(ee_f).values())))
+    math_m_count = statistics.mean(list(map(lambda rids: get_percent_true(list(map(is_intramural, rids))),
+                                            get_rid_to_collaborators(math_m).values())))
+    math_f_count = statistics.mean(list(map(lambda rids: get_percent_true(list(map(is_intramural, rids))),
+                                            get_rid_to_collaborators(math_f).values())))
+
+    ind = np.arange(4)
+    width = 0.35
+    department = ('Biology', 'Computer Science', 'Electrical Engineering', 'Math')
+
+    m_avgs = [bio_m_count, cs_m_count, ee_m_count, math_m_count]
+    f_avgs = [bio_f_count, cs_f_count, ee_f_count, math_f_count]
+    plt.bar(ind, m_avgs, width, label="Men")
+    plt.bar(ind + width, f_avgs, width, label='Women')
+
+    plt.ylabel('Percentage of intramural collaborations')
+    plt.title('Percentage of Intramural Collaborations by Department')
+    plt.xticks(ind + width / 2, department, rotation=40)
+    plt.tight_layout()
+    plt.legend(loc='best')
+    plt.savefig('./data/claim7.jpg')
+
+
+claim_7()
