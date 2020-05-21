@@ -495,4 +495,67 @@ def claim_8():
     plt.savefig('./data/claim8.jpg')
 
 
-claim_8()
+def get_collaborations_by_number_of_authors(rids):
+    few_authors = list()
+    many_authors = list()
+    for rid in rids:
+        publications = get_publications_list(rid)
+        gender = get_gender(rid)
+        for cid in publications:
+            if len(authors_df[authors_df['cid'] == cid].index) > 3:
+                many_authors.append((gender, cid))
+            else:
+                few_authors.append((gender, cid))
+    return few_authors, many_authors
+
+
+def homophily_score(gender, cid):
+    authors = set(authors_df[authors_df['cid'] == cid]['rid'].unique())
+    genders = list(map(get_gender, authors))
+    f_count = genders.count('female')
+    m_count = genders.count('male')
+    if gender == 'female':
+        if m_count == 0:
+            return 1.0
+        else:
+            return (f_count - 1) / m_count
+    else:
+        if f_count == 0:
+            return 1.0
+        else:
+            return (m_count - 1) / f_count
+
+
+def claim_9():
+    bio_few, bio_many = get_collaborations_by_number_of_authors(bio_rids)
+    cs_few, cs_many = get_collaborations_by_number_of_authors(cs_rids)
+    ee_few, ee_many = get_collaborations_by_number_of_authors(ee_rids)
+    math_few, math_many = get_collaborations_by_number_of_authors(math_rids)
+
+    bio_few_count = statistics.mean(list(map(lambda t: homophily_score(t[0], t[1]), bio_few)))
+    bio_many_count = statistics.mean(list(map(lambda t: homophily_score(t[0], t[1]), bio_many)))
+    cs_few_count = statistics.mean(list(map(lambda t: homophily_score(t[0], t[1]), cs_few)))
+    cs_many_count = statistics.mean(list(map(lambda t: homophily_score(t[0], t[1]), cs_many)))
+    ee_few_count = statistics.mean(list(map(lambda t: homophily_score(t[0], t[1]), ee_few)))
+    ee_many_count = statistics.mean(list(map(lambda t: homophily_score(t[0], t[1]), ee_many)))
+    math_few_count = statistics.mean(list(map(lambda t: homophily_score(t[0], t[1]), math_few)))
+    math_many_count = statistics.mean(list(map(lambda t: homophily_score(t[0], t[1]), math_many)))
+
+    ind = np.arange(4)
+    width = 0.35
+    department = ('Biology', 'Computer Science', 'Electrical Engineering', 'Math')
+
+    few_avgs = [bio_few_count, cs_few_count, ee_few_count, math_few_count]
+    many_avgs = [bio_many_count, cs_many_count, ee_many_count, math_many_count]
+    plt.bar(ind, few_avgs, width, label="Few Collaborators")
+    plt.bar(ind + width, many_avgs, width, label='Many Collaborators')
+
+    plt.ylabel('Same gender collaborator ratio')
+    plt.title('Same Gender Collaborator Ratio by Department')
+    plt.xticks(ind + width / 2, department, rotation=40)
+    plt.tight_layout()
+    plt.legend(loc='best')
+    plt.savefig('./data/claim9.jpg')
+
+
+claim_9()
