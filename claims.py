@@ -393,4 +393,106 @@ def claim_7():
     plt.savefig('./data/claim7.jpg')
 
 
-claim_7()
+def get_all_publications(rids):
+    return set(authors_df[authors_df['rid'].isin(rids)]['cid'].unique())
+
+
+def map_year_to_publications(cids):
+    year_to_cids = dict()
+    for cid in cids:
+        year = collaborations_df[collaborations_df['cid'] == cid].iloc[0]['year']
+        if year in year_to_cids.keys():
+            year_to_cids[year].append(cid)
+        else:
+            year_to_cids[year] = [cid]
+    return year_to_cids
+
+
+def cid_contains_woman_author(cid, woman_seed=False):
+    rids = set(authors_df[authors_df['cid'] == cid]['rid'].unique())
+    collaborator_genders = researchers_df[researchers_df['rid'].isin(rids)]['gender'].tolist()
+    if woman_seed:
+        return collaborator_genders.count('female') > 1
+    else:
+        return 'female' in collaborator_genders
+
+
+def get_line(x, y):
+    x_np = np.array(list(x))
+    y_np = np.array(list(y))
+    slope, intercept = np.polyfit(x_np, y_np, 1)
+    return x_np, (slope * x_np) + intercept
+
+
+def claim_8():
+    bio_m = list(filter(lambda rid: get_gender(rid) == 'male', bio_rids))
+    bio_f = list(filter(lambda rid: get_gender(rid) == 'female', bio_rids))
+    cs_m = list(filter(lambda rid: get_gender(rid) == 'male', cs_rids))
+    cs_f = list(filter(lambda rid: get_gender(rid) == 'female', cs_rids))
+    ee_m = list(filter(lambda rid: get_gender(rid) == 'male', ee_rids))
+    ee_f = list(filter(lambda rid: get_gender(rid) == 'female', ee_rids))
+    math_m = list(filter(lambda rid: get_gender(rid) == 'male', math_rids))
+    math_f = list(filter(lambda rid: get_gender(rid) == 'female', math_rids))
+
+    bio_m_map = {year: sum(map(cid_contains_woman_author, cids)) / len(cids) for year, cids in
+                 map_year_to_publications(get_all_publications(bio_m)).items()}
+    bio_f_map = {year: sum(map(lambda cid: cid_contains_woman_author(cid, True), cids)) / len(cids) for year, cids in
+                 map_year_to_publications(get_all_publications(bio_f)).items()}
+    cs_m_map = {year: sum(map(cid_contains_woman_author, cids)) / len(cids) for year, cids in
+                map_year_to_publications(get_all_publications(cs_m)).items()}
+    cs_f_map = {year: sum(map(lambda cid: cid_contains_woman_author(cid, True), cids)) / len(cids) for year, cids in
+                map_year_to_publications(get_all_publications(cs_f)).items()}
+    ee_m_map = {year: sum(map(cid_contains_woman_author, cids)) / len(cids) for year, cids in
+                map_year_to_publications(get_all_publications(ee_m)).items()}
+    ee_f_map = {year: sum(map(lambda cid: cid_contains_woman_author(cid, True), cids)) / len(cids) for year, cids in
+                map_year_to_publications(get_all_publications(ee_f)).items()}
+    math_m_map = {year: sum(map(cid_contains_woman_author, cids)) / len(cids) for year, cids in
+                  map_year_to_publications(get_all_publications(math_m)).items()}
+    math_f_map = {year: sum(map(lambda cid: cid_contains_woman_author(cid, True), cids)) / len(cids) for year, cids in
+                  map_year_to_publications(get_all_publications(math_f)).items()}
+
+    bio_m_lin = get_line(bio_m_map.keys(), bio_m_map.values())
+    bio_f_lin = get_line(bio_f_map.keys(), bio_f_map.values())
+    cs_m_lin = get_line(cs_m_map.keys(), cs_m_map.values())
+    cs_f_lin = get_line(cs_f_map.keys(), cs_f_map.values())
+    ee_m_lin = get_line(ee_m_map.keys(), ee_m_map.values())
+    ee_f_lin = get_line(ee_f_map.keys(), ee_f_map.values())
+    math_m_lin = get_line(math_m_map.keys(), math_m_map.values())
+    math_f_lin = get_line(math_f_map.keys(), math_f_map.values())
+
+    fig, ax = plt.subplots(4, 1, sharex=True, sharey=True)
+
+    plt.subplots_adjust(hspace=0.5)
+
+    ax[0].scatter(bio_m_map.keys(), bio_m_map.values(), c='#0000FF', s=3)
+    ax[0].scatter(bio_f_map.keys(), bio_f_map.values(), c='#FF0000', s=3)
+    ax[0].plot(bio_m_lin[0], bio_m_lin[1], c='#0000FF', linewidth=0.75)
+    ax[0].plot(bio_f_lin[0], bio_f_lin[1], c='#FF0000', linewidth=0.75)
+    ax[0].set_title('Biology')
+
+    ax[1].scatter(cs_m_map.keys(), cs_m_map.values(), c='#0000FF', s=3)
+    ax[1].scatter(cs_f_map.keys(), cs_f_map.values(), c='#FF0000', s=3)
+    ax[1].plot(cs_m_lin[0], cs_m_lin[1], c='#0000FF', linewidth=0.75)
+    ax[1].plot(cs_f_lin[0], cs_f_lin[1], c='#FF0000', linewidth=0.75)
+    ax[1].set_title('Computer Science')
+
+    ax[2].scatter(ee_m_map.keys(), ee_m_map.values(), c='#0000FF', s=3)
+    ax[2].scatter(ee_f_map.keys(), ee_f_map.values(), c='#FF0000', s=3)
+    ax[2].plot(ee_m_lin[0], ee_m_lin[1], c='#0000FF', linewidth=0.75)
+    ax[2].plot(ee_f_lin[0], ee_f_lin[1], c='#FF0000', linewidth=0.75)
+    ax[2].set_title('Electrical Engineering')
+
+    ax[3].scatter(math_m_map.keys(), math_m_map.values(), c='#0000FF', s=3)
+    ax[3].scatter(math_f_map.keys(), math_f_map.values(), c='#FF0000', s=3)
+    ax[3].plot(math_m_lin[0], math_m_lin[1], c='#0000FF', linewidth=0.75)
+    ax[3].plot(math_f_lin[0], math_f_lin[1], c='#FF0000', linewidth=0.75)
+    ax[3].set_title('Math')
+
+    fig.suptitle('Percentage of Publications with a Woman Collaborator', fontsize=11)
+
+    fig.legend(['Men', 'Women'])
+
+    plt.savefig('./data/claim8.jpg')
+
+
+claim_8()
