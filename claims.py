@@ -71,6 +71,18 @@ def claim_1():
     math_m_count = statistics.mean(list(map(lambda cids: len(set(cids)), get_rid_to_collaborators(math_m).values())))
     math_f_count = statistics.mean(list(map(lambda cids: len(set(cids)), get_rid_to_collaborators(math_f).values())))
 
+    print('Means:')
+    print('Bio: {0}, {1}'.format(bio_m_count, bio_f_count))
+    print('CS: {0}, {1}'.format(cs_m_count, cs_f_count))
+    print('EE: {0}, {1}'.format(ee_m_count, ee_f_count))
+    print('Math: {0}, {1}'.format(math_m_count, math_f_count))
+
+    print('Percent Differences:')
+    print('Bio: {0}'.format((bio_m_count - bio_f_count) / bio_m_count))
+    print('CS: {0}'.format((cs_m_count - cs_f_count) / cs_m_count))
+    print('EE: {0}'.format((ee_m_count - ee_f_count) / ee_m_count))
+    print('Math: {0}'.format((math_m_count - math_f_count) / math_m_count))
+
     ind = np.arange(4)
     width = 0.35
     department = ('Biology', 'Computer Science', 'Electrical Engineering', 'Math')
@@ -194,6 +206,54 @@ def get_gender_to_gender_ratio(rids, female_to_male):
             return 1.0
         else:
             return male_count / female_count
+
+
+def wgr(rids):
+    female_count = 0
+    for rid in rids:
+        gender = get_gender(rid)
+        if gender == 'female':
+            female_count = female_count + 1
+    if len(rids) == 0:
+        return 1.0
+    else:
+        return female_count / len(rids)
+
+
+def claim_4_1():
+    bio_m = list(filter(lambda rid: get_gender(rid) == 'male', bio_rids))
+    bio_f = list(filter(lambda rid: get_gender(rid) == 'female', bio_rids))
+    cs_m = list(filter(lambda rid: get_gender(rid) == 'male', cs_rids))
+    cs_f = list(filter(lambda rid: get_gender(rid) == 'female', cs_rids))
+    ee_m = list(filter(lambda rid: get_gender(rid) == 'male', ee_rids))
+    ee_f = list(filter(lambda rid: get_gender(rid) == 'female', ee_rids))
+    math_m = list(filter(lambda rid: get_gender(rid) == 'male', math_rids))
+    math_f = list(filter(lambda rid: get_gender(rid) == 'female', math_rids))
+
+    bio_m_count = statistics.mean(list(map(wgr, get_rid_to_collaborators(bio_m).values())))
+    bio_f_count = statistics.mean(list(map(wgr, get_rid_to_collaborators(bio_f).values())))
+    cs_m_count = statistics.mean(list(map(wgr, get_rid_to_collaborators(cs_m).values())))
+    cs_f_count = statistics.mean(list(map(wgr, get_rid_to_collaborators(cs_f).values())))
+    ee_m_count = statistics.mean(list(map(wgr, get_rid_to_collaborators(ee_m).values())))
+    ee_f_count = statistics.mean(list(map(wgr, get_rid_to_collaborators(ee_f).values())))
+    math_m_count = statistics.mean(list(map(wgr, get_rid_to_collaborators(math_m).values())))
+    math_f_count = statistics.mean(list(map(wgr, get_rid_to_collaborators(math_f).values())))
+
+    ind = np.arange(4)
+    width = 0.35
+    department = ('Biology', 'Computer Science', 'Electrical Engineering', 'Math')
+
+    m_avgs = [bio_m_count, cs_m_count, ee_m_count, math_m_count]
+    f_avgs = [bio_f_count, cs_f_count, ee_f_count, math_f_count]
+    plt.bar(ind, m_avgs, width, label="Men")
+    plt.bar(ind + width, f_avgs, width, label='Women')
+
+    plt.ylabel('Average WGR')
+    plt.title('Weightless g-ratio by Department')
+    plt.xticks(ind + width / 2, department, rotation=40)
+    plt.tight_layout()
+    plt.legend(loc='best')
+    plt.savefig('./data/wgr.jpg')
 
 
 def claim_4():
@@ -558,4 +618,4 @@ def claim_9():
     plt.savefig('./data/claim9.jpg')
 
 
-claim_9()
+claim_4_1()
