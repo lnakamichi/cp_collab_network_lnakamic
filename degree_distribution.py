@@ -250,7 +250,7 @@ cnx, cur = init_connection_with_json("./login.json")
 t = list(filter(lambda x: x < 150, map(lambda t: t[0], select_degrees(cur))))
 num_bins = 25
 n, bins, patches = plt.hist(t, num_bins, facecolor='blue', alpha=0.5)
-plt.xlabel(r"Number of Publications")
+plt.xlabel(r"Co-authorship Experience Count")
 plt.ylabel(r"Number of Researchers")
 
 plt.savefig('./data/degree_distribution.jpg')
