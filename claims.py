@@ -406,6 +406,44 @@ def claim_5():
     plt.savefig('./data/claim5.jpg')
 
 
+def claim_6_1():
+    bio_m = list(filter(lambda rid: get_gender(rid) == 'male', bio_rids))
+    bio_f = list(filter(lambda rid: get_gender(rid) == 'female', bio_rids))
+    cs_m = list(filter(lambda rid: get_gender(rid) == 'male', cs_rids))
+    cs_f = list(filter(lambda rid: get_gender(rid) == 'female', cs_rids))
+    ee_m = list(filter(lambda rid: get_gender(rid) == 'male', ee_rids))
+    ee_f = list(filter(lambda rid: get_gender(rid) == 'female', ee_rids))
+    math_m = list(filter(lambda rid: get_gender(rid) == 'male', math_rids))
+    math_f = list(filter(lambda rid: get_gender(rid) == 'female', math_rids))
+
+    bio_m_first = statistics.mean(list(map(lambda rid: len(get_publications_list(rid)), bio_m)))
+    bio_f_first = statistics.mean(list(map(lambda rid: len(get_publications_list(rid)), bio_f)))
+    cs_m_first = statistics.mean(list(map(lambda rid: len(get_publications_list(rid)), cs_m)))
+    cs_f_first = statistics.mean(list(map(lambda rid: len(get_publications_list(rid)), cs_f)))
+    ee_m_first = statistics.mean(list(map(lambda rid: len(get_publications_list(rid)), ee_m)))
+    ee_f_first = statistics.mean(list(map(lambda rid: len(get_publications_list(rid)), ee_f)))
+    math_m_first = statistics.mean(list(map(lambda rid: len(get_publications_list(rid)), math_m)))
+    math_f_first = statistics.mean(list(map(lambda rid: len(get_publications_list(rid)), math_f)))
+
+    m_to_w = [bio_m_first / bio_f_first, cs_m_first / cs_f_first, ee_m_first / ee_f_first, math_m_first / math_f_first]
+    w_to_m = [bio_f_first / bio_m_first, cs_f_first / cs_m_first, ee_f_first / ee_m_first, math_f_first / math_m_first]
+
+
+    ind = np.arange(4)
+    width = 0.35
+    department = ('Biology', 'Computer Science', 'Electrical Engineering', 'Math')
+
+    plt.bar(ind, m_to_w, width, label="Men to Women")
+    plt.bar(ind + width, w_to_m, width, label='Women to Men')
+
+    plt.ylabel('Ratios of Average Number of Publications')
+    plt.title('Ratios of Average Number of Publications by Department')
+    plt.xticks(ind + width / 2, department, rotation=40)
+    plt.tight_layout()
+    plt.legend(loc='best')
+    plt.savefig('./data/claim6.jpg')
+
+
 def claim_6():
     bio_m = list(filter(lambda rid: get_gender(rid) == 'male', bio_rids))
     bio_f = list(filter(lambda rid: get_gender(rid) == 'female', bio_rids))
@@ -663,4 +701,4 @@ def claim_9():
     plt.savefig('./data/claim9.jpg')
 
 
-claim_4_2()
+claim_6_1()
