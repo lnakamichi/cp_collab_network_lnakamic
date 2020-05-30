@@ -105,6 +105,78 @@ def get_num_repeats(rid_list):
     return sum(map(lambda rid: rid_list.count(rid) - 1, set(rid_list)))
 
 
+def get_publications_list(rid):
+    return set(authors_df[authors_df['rid'] == rid]['cid'].unique())
+
+
+def get_authors(cid):
+    return set(authors_df[authors_df['cid'] == cid]['rid'].unique())
+
+
+def strength_of_ties(rid):
+    publications = get_publications_list(rid)
+    author_to_count = dict()
+    for publication in publications:
+        authors = get_authors(publication)
+        for author in authors:
+            if author in author_to_count.keys():
+                author_to_count[author] = author_to_count[author] + 1
+            else:
+                author_to_count[author] = 1
+    if len(author_to_count.keys()) < 2:
+        return 0.0
+    return (sum(map(lambda k: author_to_count[k], filter(lambda k: k != rid, author_to_count.keys()))) /
+            (len(author_to_count.keys()) - 1))
+
+
+def claim_2_1():
+    bio_m = list(filter(lambda rid: get_gender(rid) == 'male', bio_rids))
+    bio_f = list(filter(lambda rid: get_gender(rid) == 'female', bio_rids))
+    cs_m = list(filter(lambda rid: get_gender(rid) == 'male', cs_rids))
+    cs_f = list(filter(lambda rid: get_gender(rid) == 'female', cs_rids))
+    ee_m = list(filter(lambda rid: get_gender(rid) == 'male', ee_rids))
+    ee_f = list(filter(lambda rid: get_gender(rid) == 'female', ee_rids))
+    math_m = list(filter(lambda rid: get_gender(rid) == 'male', math_rids))
+    math_f = list(filter(lambda rid: get_gender(rid) == 'female', math_rids))
+
+    bio_m_count = statistics.mean(list(map(strength_of_ties, bio_m)))
+    bio_f_count = statistics.mean(list(map(strength_of_ties, bio_f)))
+    cs_m_count = statistics.mean(list(map(strength_of_ties, cs_m)))
+    cs_f_count = statistics.mean(list(map(strength_of_ties, cs_f)))
+    ee_m_count = statistics.mean(list(map(strength_of_ties, ee_m)))
+    ee_f_count = statistics.mean(list(map(strength_of_ties, ee_f)))
+    math_m_count = statistics.mean(list(map(strength_of_ties, math_m)))
+    math_f_count = statistics.mean(list(map(strength_of_ties, math_f)))
+
+    ind = np.arange(4)
+    width = 0.35
+    department = ('Biology', 'Computer Science', 'Electrical Engineering', 'Math')
+
+    m_avgs = [bio_m_count, cs_m_count, ee_m_count, math_m_count]
+    f_avgs = [bio_f_count, cs_f_count, ee_f_count, math_f_count]
+
+    print(m_avgs)
+    print(f_avgs)
+
+    print("percent differences:")
+    for i in range(0, 4):
+        print((f_avgs[i] - m_avgs[i]) / m_avgs[i])
+    # -0.09446864001946396
+    # 0.015255734767937032
+    # -0.0248843871470372
+    # 0.5089967693032338
+
+    plt.bar(ind, m_avgs, width, label="Men")
+    plt.bar(ind + width, f_avgs, width, label='Women')
+
+    plt.ylabel('Average strength of ties')
+    plt.title('Average Strength of Ties by Department')
+    plt.xticks(ind + width / 2, department, rotation=40)
+    plt.tight_layout()
+    plt.legend(loc='best')
+    plt.savefig('./data/claim2.jpg')
+
+
 def claim_2():
     bio_m = list(filter(lambda rid: get_gender(rid) == 'male', bio_rids))
     bio_f = list(filter(lambda rid: get_gender(rid) == 'female', bio_rids))
@@ -254,14 +326,6 @@ def claim_4_1():
     plt.tight_layout()
     plt.legend(loc='best')
     plt.savefig('./data/wgr.jpg')
-
-
-def get_publications_list(rid):
-    return set(authors_df[authors_df['rid'] == rid]['cid'].unique())
-
-
-def get_authors(cid):
-    return set(authors_df[authors_df['cid'] == cid]['rid'].unique())
 
 
 def rid_list_to_male_ratio(rids, seed_male = False):
@@ -726,4 +790,4 @@ def claim_9():
     plt.savefig('./data/claim9.jpg')
 
 
-claim_9()
+claim_2_1()
