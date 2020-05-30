@@ -525,11 +525,17 @@ def claim_7():
 
     m_avgs = [bio_m_count, cs_m_count, ee_m_count, math_m_count]
     f_avgs = [bio_f_count, cs_f_count, ee_f_count, math_f_count]
+
+    print(m_avgs)
+    # [0.1720648482648852, 0.29941925776692224, 0.2371874547038389, 0.2471705589102617]
+    print(f_avgs)
+    # [0.24935394425676488, 0.3432141559658338, 0.45981642035032716, 0.09051858535729504]
+
     plt.bar(ind, m_avgs, width, label="Men")
     plt.bar(ind + width, f_avgs, width, label='Women')
 
-    plt.ylabel('Percentage of intramural collaborations')
-    plt.title('Percentage of Intramural Collaborations by Department')
+    plt.ylabel('Propensity to Collaborate Intramurally')
+    plt.title('Propensity to Collaborate Intramurally by Department')
     plt.xticks(ind + width / 2, department, rotation=40)
     plt.tight_layout()
     plt.legend(loc='best')
@@ -701,4 +707,4 @@ def claim_9():
     plt.savefig('./data/claim9.jpg')
 
 
-claim_6_1()
+claim_7()
