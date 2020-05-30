@@ -675,27 +675,46 @@ def homophily_score(gender, cid):
             return (m_count - 1) / f_count
 
 
+def cid_alpha_prime(gender_cid_list):
+    male = []
+    female = []
+    for gender, publication in gender_cid_list:
+        if gender == "male":
+            male.append(rid_list_to_male_ratio(get_authors(publication), True))
+        elif gender == "female":
+            female.append(rid_list_to_male_ratio(get_authors(publication)))
+    p = statistics.mean(male)
+    q = statistics.mean(female)
+    return p-q
+
+
 def claim_9():
     bio_few, bio_many = get_collaborations_by_number_of_authors(bio_rids)
     cs_few, cs_many = get_collaborations_by_number_of_authors(cs_rids)
     ee_few, ee_many = get_collaborations_by_number_of_authors(ee_rids)
     math_few, math_many = get_collaborations_by_number_of_authors(math_rids)
 
-    bio_few_count = statistics.mean(list(map(lambda t: homophily_score(t[0], t[1]), bio_few)))
-    bio_many_count = statistics.mean(list(map(lambda t: homophily_score(t[0], t[1]), bio_many)))
-    cs_few_count = statistics.mean(list(map(lambda t: homophily_score(t[0], t[1]), cs_few)))
-    cs_many_count = statistics.mean(list(map(lambda t: homophily_score(t[0], t[1]), cs_many)))
-    ee_few_count = statistics.mean(list(map(lambda t: homophily_score(t[0], t[1]), ee_few)))
-    ee_many_count = statistics.mean(list(map(lambda t: homophily_score(t[0], t[1]), ee_many)))
-    math_few_count = statistics.mean(list(map(lambda t: homophily_score(t[0], t[1]), math_few)))
-    math_many_count = statistics.mean(list(map(lambda t: homophily_score(t[0], t[1]), math_many)))
+    bio_few_ap = cid_alpha_prime(bio_few)
+    bio_many_ap = cid_alpha_prime(bio_many)
+    cs_few_ap = cid_alpha_prime(cs_few)
+    cs_many_ap = cid_alpha_prime(cs_many)
+    ee_few_ap = cid_alpha_prime(ee_few)
+    ee_many_ap = cid_alpha_prime(ee_many)
+    math_few_ap = cid_alpha_prime(math_few)
+    math_many_ap = cid_alpha_prime(math_many)
 
     ind = np.arange(4)
     width = 0.35
     department = ('Biology', 'Computer Science', 'Electrical Engineering', 'Math')
 
-    few_avgs = [bio_few_count, cs_few_count, ee_few_count, math_few_count]
-    many_avgs = [bio_many_count, cs_many_count, ee_many_count, math_many_count]
+    few_avgs = [bio_few_ap, cs_few_ap, ee_few_ap, math_few_ap]
+    many_avgs = [bio_many_ap, cs_many_ap, ee_many_ap, math_many_ap]
+
+    print(few_avgs)
+    # [-0.09132186078293864, 0.01150691449198915, -0.032774957698815554, -0.07988856637640546]
+    print(many_avgs)
+    # [0.03154575017605715, 0.013245328905386322, -0.04736908585692745, -0.06109689109689104]
+
     plt.bar(ind, few_avgs, width, label="Few Collaborators")
     plt.bar(ind + width, many_avgs, width, label='Many Collaborators')
 
@@ -707,4 +726,4 @@ def claim_9():
     plt.savefig('./data/claim9.jpg')
 
 
-claim_7()
+claim_9()
