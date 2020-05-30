@@ -256,6 +256,55 @@ def claim_4_1():
     plt.savefig('./data/wgr.jpg')
 
 
+def get_publications_list(rid):
+    return set(authors_df[authors_df['rid'] == rid]['cid'].unique())
+
+
+def get_authors(cid):
+    return set(authors_df[authors_df['cid'] == cid]['rid'].unique())
+
+
+def rid_list_to_male_ratio(rids, seed_male = False):
+    male_count = 0
+    for rid in rids:
+        if get_gender(rid) == "male":
+            male_count = male_count + 1
+    if len(rids) == 0:
+        return 1.0
+    if seed_male:
+        male_count = male_count - 1
+    return male_count / len(rids)
+
+
+def alpha_prime(rids):
+    rid_to_publications = {rid: get_publications_list(rid) for rid in rids}
+    male = []
+    female = []
+    for rid, publications in rid_to_publications.items():
+        gender = get_gender(rid)
+        if gender == "male":
+            male.append(statistics.mean(list(map(lambda a_list: rid_list_to_male_ratio(a_list, True),
+                                                 map(get_authors, publications)))))
+        elif gender == "female":
+            female.append(statistics.mean(list(map(rid_list_to_male_ratio, map(get_authors, publications)))))
+    p = statistics.mean(male)
+    q = statistics.mean(female)
+    print(p)
+    print(q)
+    return p-q
+
+
+def claim_4_2():
+    bio_ap = alpha_prime(bio_rids)
+    cs_ap = alpha_prime(cs_rids)
+    ee_ap = alpha_prime(ee_rids)
+    math_ap = alpha_prime(math_rids)
+
+    avgs = [bio_ap, cs_ap, ee_ap, math_ap]
+    print(avgs)
+    # [-0.0004505424644181133, 0.0979599138352612, -0.03969131204531301, -0.07141518567411426]
+
+
 def claim_4():
     bio_m = list(filter(lambda rid: get_gender(rid) == 'male', bio_rids))
     bio_f = list(filter(lambda rid: get_gender(rid) == 'female', bio_rids))
@@ -298,10 +347,6 @@ def claim_4():
     plt.tight_layout()
     plt.legend(loc='best')
     plt.savefig('./data/claim4.jpg')
-
-
-def get_publications_list(rid):
-    return set(authors_df[authors_df['rid'] == rid]['cid'].unique())
 
 
 def get_publication_year(cid):
@@ -618,4 +663,4 @@ def claim_9():
     plt.savefig('./data/claim9.jpg')
 
 
-claim_4_1()
+claim_4_2()
