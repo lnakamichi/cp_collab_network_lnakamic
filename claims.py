@@ -649,61 +649,82 @@ def claim_8():
 
     bio_m_map = {year: sum(map(cid_contains_woman_author, cids)) / len(cids) for year, cids in
                  map_year_to_publications(get_all_publications(bio_m)).items()}
-    bio_f_map = {year: sum(map(lambda cid: cid_contains_woman_author(cid, True), cids)) / len(cids) for year, cids in
-                 map_year_to_publications(get_all_publications(bio_f)).items()}
+    # bio_f_map = {year: sum(map(lambda cid: cid_contains_woman_author(cid, True), cids)) / len(cids) for year, cids in
+    #              map_year_to_publications(get_all_publications(bio_f)).items()}
     cs_m_map = {year: sum(map(cid_contains_woman_author, cids)) / len(cids) for year, cids in
                 map_year_to_publications(get_all_publications(cs_m)).items()}
-    cs_f_map = {year: sum(map(lambda cid: cid_contains_woman_author(cid, True), cids)) / len(cids) for year, cids in
-                map_year_to_publications(get_all_publications(cs_f)).items()}
+    # cs_f_map = {year: sum(map(lambda cid: cid_contains_woman_author(cid, True), cids)) / len(cids) for year, cids in
+    #             map_year_to_publications(get_all_publications(cs_f)).items()}
     ee_m_map = {year: sum(map(cid_contains_woman_author, cids)) / len(cids) for year, cids in
                 map_year_to_publications(get_all_publications(ee_m)).items()}
-    ee_f_map = {year: sum(map(lambda cid: cid_contains_woman_author(cid, True), cids)) / len(cids) for year, cids in
-                map_year_to_publications(get_all_publications(ee_f)).items()}
+    # ee_f_map = {year: sum(map(lambda cid: cid_contains_woman_author(cid, True), cids)) / len(cids) for year, cids in
+    #             map_year_to_publications(get_all_publications(ee_f)).items()}
     math_m_map = {year: sum(map(cid_contains_woman_author, cids)) / len(cids) for year, cids in
                   map_year_to_publications(get_all_publications(math_m)).items()}
-    math_f_map = {year: sum(map(lambda cid: cid_contains_woman_author(cid, True), cids)) / len(cids) for year, cids in
-                  map_year_to_publications(get_all_publications(math_f)).items()}
+    # math_f_map = {year: sum(map(lambda cid: cid_contains_woman_author(cid, True), cids)) / len(cids) for year, cids in
+    #               map_year_to_publications(get_all_publications(math_f)).items()}
+
+    bio_all_map = {year: sum(map(cid_contains_woman_author, cids)) / len(cids) for year, cids in
+                 map_year_to_publications(get_all_publications(bio_rids)).items()}
+    cs_all_map = {year: sum(map(cid_contains_woman_author, cids)) / len(cids) for year, cids in
+                   map_year_to_publications(get_all_publications(cs_rids)).items()}
+    ee_all_map = {year: sum(map(cid_contains_woman_author, cids)) / len(cids) for year, cids in
+                   map_year_to_publications(get_all_publications(ee_rids)).items()}
+    math_all_map = {year: sum(map(cid_contains_woman_author, cids)) / len(cids) for year, cids in
+                   map_year_to_publications(get_all_publications(math_rids)).items()}
 
     bio_m_lin = get_line(bio_m_map.keys(), bio_m_map.values())
-    bio_f_lin = get_line(bio_f_map.keys(), bio_f_map.values())
+    # bio_f_lin = get_line(bio_f_map.keys(), bio_f_map.values())
     cs_m_lin = get_line(cs_m_map.keys(), cs_m_map.values())
-    cs_f_lin = get_line(cs_f_map.keys(), cs_f_map.values())
+    # cs_f_lin = get_line(cs_f_map.keys(), cs_f_map.values())
     ee_m_lin = get_line(ee_m_map.keys(), ee_m_map.values())
-    ee_f_lin = get_line(ee_f_map.keys(), ee_f_map.values())
+    # ee_f_lin = get_line(ee_f_map.keys(), ee_f_map.values())
     math_m_lin = get_line(math_m_map.keys(), math_m_map.values())
-    math_f_lin = get_line(math_f_map.keys(), math_f_map.values())
+    # math_f_lin = get_line(math_f_map.keys(), math_f_map.values())
+
+    bio_lin = get_line(bio_all_map.keys(), bio_all_map.values())
+    cs_lin = get_line(cs_all_map.keys(), cs_all_map.values())
+    ee_lin = get_line(ee_all_map.keys(), ee_all_map.values())
+    math_lin = get_line(math_all_map.keys(), math_all_map.values())
 
     fig, ax = plt.subplots(4, 1, sharex=True, sharey=True)
 
     plt.subplots_adjust(hspace=0.5)
 
-    ax[0].scatter(bio_m_map.keys(), bio_m_map.values(), c='#0000FF', s=3)
-    ax[0].scatter(bio_f_map.keys(), bio_f_map.values(), c='#FF0000', s=3)
+    # ax[0].scatter(bio_m_map.keys(), bio_m_map.values(), c='#0000FF', s=3)
+    # ax[0].scatter(bio_f_map.keys(), bio_f_map.values(), c='#FF0000', s=3)
     ax[0].plot(bio_m_lin[0], bio_m_lin[1], c='#0000FF', linewidth=0.75)
-    ax[0].plot(bio_f_lin[0], bio_f_lin[1], c='#FF0000', linewidth=0.75)
+    # ax[0].plot(bio_f_lin[0], bio_f_lin[1], c='#FF0000', linewidth=0.75)
+    ax[0].plot(bio_lin[0], bio_lin[1], c='#FFA500', linewidth=0.75)
     ax[0].set_title('Biology')
 
-    ax[1].scatter(cs_m_map.keys(), cs_m_map.values(), c='#0000FF', s=3)
-    ax[1].scatter(cs_f_map.keys(), cs_f_map.values(), c='#FF0000', s=3)
+    # ax[1].scatter(cs_m_map.keys(), cs_m_map.values(), c='#0000FF', s=3)
+    # ax[1].scatter(cs_f_map.keys(), cs_f_map.values(), c='#FF0000', s=3)
     ax[1].plot(cs_m_lin[0], cs_m_lin[1], c='#0000FF', linewidth=0.75)
-    ax[1].plot(cs_f_lin[0], cs_f_lin[1], c='#FF0000', linewidth=0.75)
+    # ax[1].plot(cs_f_lin[0], cs_f_lin[1], c='#FF0000', linewidth=0.75)
+    ax[1].plot(cs_lin[0], cs_lin[1], c='#FFA500', linewidth=0.75)
     ax[1].set_title('Computer Science')
 
-    ax[2].scatter(ee_m_map.keys(), ee_m_map.values(), c='#0000FF', s=3)
-    ax[2].scatter(ee_f_map.keys(), ee_f_map.values(), c='#FF0000', s=3)
+    # ax[2].scatter(ee_m_map.keys(), ee_m_map.values(), c='#0000FF', s=3)
+    # ax[2].scatter(ee_f_map.keys(), ee_f_map.values(), c='#FF0000', s=3)
     ax[2].plot(ee_m_lin[0], ee_m_lin[1], c='#0000FF', linewidth=0.75)
-    ax[2].plot(ee_f_lin[0], ee_f_lin[1], c='#FF0000', linewidth=0.75)
+    # ax[2].plot(ee_f_lin[0], ee_f_lin[1], c='#FF0000', linewidth=0.75)
+    ax[2].plot(ee_lin[0], ee_lin[1], c='#FFA500', linewidth=0.75)
     ax[2].set_title('Electrical Engineering')
 
-    ax[3].scatter(math_m_map.keys(), math_m_map.values(), c='#0000FF', s=3)
-    ax[3].scatter(math_f_map.keys(), math_f_map.values(), c='#FF0000', s=3)
+    # ax[3].scatter(math_m_map.keys(), math_m_map.values(), c='#0000FF', s=3)
+    # ax[3].scatter(math_f_map.keys(), math_f_map.values(), c='#FF0000', s=3)
     ax[3].plot(math_m_lin[0], math_m_lin[1], c='#0000FF', linewidth=0.75)
-    ax[3].plot(math_f_lin[0], math_f_lin[1], c='#FF0000', linewidth=0.75)
+    # ax[3].plot(math_f_lin[0], math_f_lin[1], c='#FF0000', linewidth=0.75)
+    ax[3].plot(math_lin[0], math_lin[1], c='#FFA500', linewidth=0.75)
     ax[3].set_title('Math')
 
-    fig.suptitle('Percentage of Publications with a Woman Collaborator', fontsize=11)
+    plt.subplots_adjust(hspace=0.8)
+    fig.suptitle('Percentage of Publications with a Woman Collaborator', x=0.39)
 
-    fig.legend(['Men', 'Women'])
+    fig.legend(['Men', 'All Researchers'], loc='upper right')
+
+    plt.xlabel('Year')
 
     plt.savefig('./data/claim8.jpg')
 
@@ -790,4 +811,4 @@ def claim_9():
     plt.savefig('./data/claim9.jpg')
 
 
-claim_2_1()
+claim_8()
