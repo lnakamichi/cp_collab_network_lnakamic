@@ -1,0 +1,117 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 500px;
+            height: 500px;
+            background-color: #ffffff;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+
+        
+        #config {
+            float: left;
+            width: 400px;
+            height: 600px;
+        }
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+
+<div id = "config"></div>
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"id": 73988, "label": 73988, "shape": "dot", "title": "tingjian ge"}, {"id": 84881, "label": 84881, "shape": "dot", "title": "nupur garg"}, {"id": 73619, "label": 73619, "shape": "dot", "title": "ronald olsson"}, {"id": 73364, "label": 73364, "shape": "dot", "title": "kurt mammen"}, {"id": 84636, "label": 84636, "shape": "dot", "title": "chris lupo"}, {"id": 71198, "label": 71198, "shape": "dot", "title": "esteban pauli"}, {"id": 84254, "label": 84254, "shape": "dot", "title": "john oliver"}, {"id": 71200, "label": 71200, "shape": "dot", "title": "tiejun li"}, {"id": 71201, "label": 71201, "shape": "dot", "title": "eugene fodor"}, {"id": 71202, "label": 71202, "shape": "dot", "title": "gregory benson"}, {"id": 71199, "label": 71199, "shape": "dot", "title": "yi yeung"}, {"id": 71203, "label": 71203, "shape": "dot", "title": "stoney jackson"}, {"id": 74152, "label": 74152, "shape": "dot", "title": "justin maris"}, {"id": 84285, "label": 84285, "shape": "dot", "title": "zoe wood"}, {"id": 74179, "label": 74179, "shape": "dot", "title": "takashi ishihara"}, {"id": 73940, "label": 73940, "shape": "dot", "title": "hiu chan"}, {"id": 74205, "label": 74205, "shape": "dot", "title": "andrew gallagher"}, {"id": 73567, "label": 73567, "shape": "dot", "title": "appu goundan"}, {"id": 74335, "label": 74335, "shape": "dot", "title": "eric wohlstadter"}, {"id": 84834, "label": 84834, "shape": "dot", "title": "doug gallatin"}, {"color": "#b300ff", "id": 84835, "label": 84835, "shape": "dot", "title": "aaron keen"}, {"id": 73708, "label": 73708, "shape": "dot", "title": "todd williamson"}, {"id": 73463, "label": 73463, "shape": "dot", "title": "billy man"}]);
+        edges = new vis.DataSet([{"from": 73988, "title": 2002, "to": 71202}, {"from": 73988, "title": 2002, "to": 73619}, {"from": 73988, "title": 2004, "to": 74152}, {"from": 73988, "title": 2002, "to": 84835}, {"from": 84881, "title": 2020, "to": 84285}, {"from": 84881, "title": 2018, "to": 84835}, {"from": 73619, "title": 2005, "to": 71198}, {"from": 73619, "title": 2009, "to": 71199}, {"from": 73619, "title": 2003, "to": 71200}, {"from": 73619, "title": 2003, "to": 71201}, {"from": 73619, "title": 2002, "to": 71202}, {"from": 73619, "title": 2008, "to": 73463}, {"from": 73619, "title": 2008, "to": 73567}, {"from": 73619, "title": 2008, "to": 73940}, {"from": 73619, "title": 2004, "to": 84835}, {"from": 73619, "title": 2004, "to": 74152}, {"from": 73619, "title": 2015, "to": 73708}, {"from": 73619, "title": 2008, "to": 74205}, {"from": 73619, "title": 2004, "to": 74179}, {"from": 73619, "title": 2002, "to": 74335}, {"from": 73364, "title": 2015, "to": 84835}, {"from": 84636, "title": 2014, "to": 84254}, {"from": 84636, "title": 2012, "to": 84285}, {"from": 84636, "title": 2014, "to": 84834}, {"from": 84636, "title": 2014, "to": 84835}, {"from": 71198, "title": 2005, "to": 73463}, {"from": 71198, "title": 2005, "to": 73940}, {"from": 71198, "title": 2005, "to": 84835}, {"from": 84254, "title": 2014, "to": 84834}, {"from": 84254, "title": 2014, "to": 84835}, {"from": 71200, "title": 2003, "to": 71201}, {"from": 71200, "title": 2003, "to": 74152}, {"from": 71200, "title": 2003, "to": 74179}, {"from": 71200, "title": 2003, "to": 84835}, {"from": 71201, "title": 2003, "to": 74152}, {"from": 71201, "title": 2003, "to": 74179}, {"from": 71201, "title": 2003, "to": 84835}, {"from": 71202, "title": 2002, "to": 84835}, {"from": 71199, "title": 2009, "to": 73567}, {"from": 71199, "title": 2009, "to": 73940}, {"from": 71199, "title": 2009, "to": 74205}, {"from": 71199, "title": 2009, "to": 84835}, {"from": 71203, "title": 2001, "to": 74335}, {"from": 71203, "title": 2001, "to": 84835}, {"from": 74152, "title": 2004, "to": 84835}, {"from": 74152, "title": 2004, "to": 74179}, {"from": 74152, "title": 2002, "to": 74335}, {"from": 84285, "title": 2015, "to": 84835}, {"from": 74179, "title": 2004, "to": 84835}, {"from": 74179, "title": 2002, "to": 74335}, {"from": 73940, "title": 2008, "to": 73463}, {"from": 73940, "title": 2008, "to": 73567}, {"from": 73940, "title": 2008, "to": 84835}, {"from": 73940, "title": 2008, "to": 74205}, {"from": 74205, "title": 2008, "to": 73463}, {"from": 74205, "title": 2008, "to": 73567}, {"from": 74205, "title": 2008, "to": 84835}, {"from": 73567, "title": 2008, "to": 73463}, {"from": 73567, "title": 2008, "to": 84835}, {"from": 74335, "title": 2001, "to": 84835}, {"from": 84834, "title": 2014, "to": 84835}, {"from": 84835, "title": 2008, "to": 73463}, {"from": 84835, "title": 2015, "to": 73708}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {
+    "configure": {
+        "enabled": true
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": false,
+            "type": "continuous"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+        
+        
+
+        
+        // if this network requires displaying the configure window,
+        // put it in its div
+        options.configure["container"] = document.getElementById("config");
+        
+
+        network = new vis.Network(container, data, options);
+
+        
+
+
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>

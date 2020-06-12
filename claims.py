@@ -101,6 +101,39 @@ def claim_1():
     plt.savefig('./data/claim1.jpg')
 
 
+def claim_1_bw():
+    bio_m = list(filter(lambda rid: get_gender(rid) == 'male', bio_rids))
+    bio_f = list(filter(lambda rid: get_gender(rid) == 'female', bio_rids))
+    cs_m = list(filter(lambda rid: get_gender(rid) == 'male', cs_rids))
+    cs_f = list(filter(lambda rid: get_gender(rid) == 'female', cs_rids))
+    ee_m = list(filter(lambda rid: get_gender(rid) == 'male', ee_rids))
+    ee_f = list(filter(lambda rid: get_gender(rid) == 'female', ee_rids))
+    math_m = list(filter(lambda rid: get_gender(rid) == 'male', math_rids))
+    math_f = list(filter(lambda rid: get_gender(rid) == 'female', math_rids))
+
+    bio_m_count = list(map(lambda cids: len(set(cids)), get_rid_to_collaborators(bio_m).values()))
+    bio_f_count = list(map(lambda cids: len(set(cids)), get_rid_to_collaborators(bio_f).values()))
+    cs_m_count = list(map(lambda cids: len(set(cids)), get_rid_to_collaborators(cs_m).values()))
+    cs_f_count = list(map(lambda cids: len(set(cids)), get_rid_to_collaborators(cs_f).values()))
+    ee_m_count = list(map(lambda cids: len(set(cids)), get_rid_to_collaborators(ee_m).values()))
+    ee_f_count = list(map(lambda cids: len(set(cids)), get_rid_to_collaborators(ee_f).values()))
+    math_m_count = list(map(lambda cids: len(set(cids)), get_rid_to_collaborators(math_m).values()))
+    math_f_count = list(map(lambda cids: len(set(cids)), get_rid_to_collaborators(math_f).values()))
+
+    fig, (bio, cs, ee, math) = plt.subplots(1, 4)
+    plt.subplots_adjust(hspace=3)
+    bio.boxplot([bio_m_count, bio_f_count], labels=['Men', 'Women'], showmeans=True)
+    bio.set_title('Biology')
+    cs.boxplot([cs_m_count, cs_f_count], labels=['Men', 'Women'], showmeans=True)
+    cs.set_title('Computer Science')
+    ee.boxplot([ee_m_count, ee_f_count], labels=['Men', 'Women'], showmeans=True)
+    ee.set_title('Electrical Engineering')
+    math.boxplot([math_m_count, math_f_count], labels=['Men', 'Women'], showmeans=True)
+    math.set_title('Math')
+    bio.set_ylabel('Number of Collaborators')
+    plt.show()
+
+
 def get_num_repeats(rid_list):
     return sum(map(lambda rid: rid_list.count(rid) - 1, set(rid_list)))
 
@@ -127,6 +160,39 @@ def strength_of_ties(rid):
         return 0.0
     return (sum(map(lambda k: author_to_count[k], filter(lambda k: k != rid, author_to_count.keys()))) /
             (len(author_to_count.keys()) - 1))
+
+
+def claim_2_1_bw():
+    bio_m = list(filter(lambda rid: get_gender(rid) == 'male', bio_rids))
+    bio_f = list(filter(lambda rid: get_gender(rid) == 'female', bio_rids))
+    cs_m = list(filter(lambda rid: get_gender(rid) == 'male', cs_rids))
+    cs_f = list(filter(lambda rid: get_gender(rid) == 'female', cs_rids))
+    ee_m = list(filter(lambda rid: get_gender(rid) == 'male', ee_rids))
+    ee_f = list(filter(lambda rid: get_gender(rid) == 'female', ee_rids))
+    math_m = list(filter(lambda rid: get_gender(rid) == 'male', math_rids))
+    math_f = list(filter(lambda rid: get_gender(rid) == 'female', math_rids))
+
+    bio_m_count = list(map(strength_of_ties, bio_m))
+    bio_f_count = list(map(strength_of_ties, bio_f))
+    cs_m_count = list(map(strength_of_ties, cs_m))
+    cs_f_count = list(map(strength_of_ties, cs_f))
+    ee_m_count = list(map(strength_of_ties, ee_m))
+    ee_f_count = list(map(strength_of_ties, ee_f))
+    math_m_count = list(map(strength_of_ties, math_m))
+    math_f_count = list(map(strength_of_ties, math_f))
+
+    fig, (bio, cs, ee, math) = plt.subplots(1, 4)
+    plt.subplots_adjust(hspace=3)
+    bio.boxplot([bio_m_count, bio_f_count], labels=['Men', 'Women'], showmeans=True)
+    bio.set_title('Biology')
+    cs.boxplot([cs_m_count, cs_f_count], labels=['Men', 'Women'], showmeans=True)
+    cs.set_title('Computer Science')
+    ee.boxplot([ee_m_count, ee_f_count], labels=['Men', 'Women'], showmeans=True)
+    ee.set_title('Electrical Engineering')
+    math.boxplot([math_m_count, math_f_count], labels=['Men', 'Women'], showmeans=True)
+    math.set_title('Math')
+    bio.set_ylabel('Strength of Ties')
+    plt.show()
 
 
 def claim_2_1():
@@ -292,6 +358,39 @@ def wgr(rids):
         return female_count / len(rids)
 
 
+def claim_4_bw():
+    bio_m = list(filter(lambda rid: get_gender(rid) == 'male', bio_rids))
+    bio_f = list(filter(lambda rid: get_gender(rid) == 'female', bio_rids))
+    cs_m = list(filter(lambda rid: get_gender(rid) == 'male', cs_rids))
+    cs_f = list(filter(lambda rid: get_gender(rid) == 'female', cs_rids))
+    ee_m = list(filter(lambda rid: get_gender(rid) == 'male', ee_rids))
+    ee_f = list(filter(lambda rid: get_gender(rid) == 'female', ee_rids))
+    math_m = list(filter(lambda rid: get_gender(rid) == 'male', math_rids))
+    math_f = list(filter(lambda rid: get_gender(rid) == 'female', math_rids))
+
+    bio_m_count = list(map(wgr, get_rid_to_collaborators(bio_m).values()))
+    bio_f_count = list(map(wgr, get_rid_to_collaborators(bio_f).values()))
+    cs_m_count = list(map(wgr, get_rid_to_collaborators(cs_m).values()))
+    cs_f_count = list(map(wgr, get_rid_to_collaborators(cs_f).values()))
+    ee_m_count = list(map(wgr, get_rid_to_collaborators(ee_m).values()))
+    ee_f_count = list(map(wgr, get_rid_to_collaborators(ee_f).values()))
+    math_m_count = list(map(wgr, get_rid_to_collaborators(math_m).values()))
+    math_f_count = list(map(wgr, get_rid_to_collaborators(math_f).values()))
+
+    fig, (bio, cs, ee, math) = plt.subplots(1, 4)
+    plt.subplots_adjust(hspace=3)
+    bio.boxplot([bio_m_count, bio_f_count], labels=['Men', 'Women'], showmeans=True)
+    bio.set_title('Biology')
+    cs.boxplot([cs_m_count, cs_f_count], labels=['Men', 'Women'], showmeans=True)
+    cs.set_title('Computer Science')
+    ee.boxplot([ee_m_count, ee_f_count], labels=['Men', 'Women'], showmeans=True)
+    ee.set_title('Electrical Engineering')
+    math.boxplot([math_m_count, math_f_count], labels=['Men', 'Women'], showmeans=True)
+    math.set_title('Math')
+    bio.set_ylabel('Weightless g-ratio')
+    plt.show()
+
+
 def claim_4_1():
     bio_m = list(filter(lambda rid: get_gender(rid) == 'male', bio_rids))
     bio_f = list(filter(lambda rid: get_gender(rid) == 'female', bio_rids))
@@ -416,6 +515,47 @@ def claim_4():
 def get_publication_year(cid):
     year = collaborations_df[collaborations_df['cid'] == cid].iloc[0]['year']
     return year
+
+
+def claim_5_bw():
+    bio_m = list(filter(lambda rid: get_gender(rid) == 'male', bio_rids))
+    bio_f = list(filter(lambda rid: get_gender(rid) == 'female', bio_rids))
+    cs_m = list(filter(lambda rid: get_gender(rid) == 'male', cs_rids))
+    cs_f = list(filter(lambda rid: get_gender(rid) == 'female', cs_rids))
+    ee_m = list(filter(lambda rid: get_gender(rid) == 'male', ee_rids))
+    ee_f = list(filter(lambda rid: get_gender(rid) == 'female', ee_rids))
+    math_m = list(filter(lambda rid: get_gender(rid) == 'male', math_rids))
+    math_f = list(filter(lambda rid: get_gender(rid) == 'female', math_rids))
+
+    bio_m_first = list(map(lambda rid: 2020 - min(set(map(get_publication_year, get_publications_list(rid)))),
+                 bio_m))
+    bio_f_first = list(map(lambda rid: 2020 - min(set(map(get_publication_year, get_publications_list(rid)))),
+                 bio_f))
+    cs_m_first = list(map(lambda rid: 2020 - min(set(map(get_publication_year, get_publications_list(rid)))),
+                 cs_m))
+    cs_f_first = list(map(lambda rid: 2020 - min(set(map(get_publication_year, get_publications_list(rid)))),
+                 cs_f))
+    ee_m_first = list(map(lambda rid: 2020 - min(set(map(get_publication_year, get_publications_list(rid)))),
+                 ee_m))
+    ee_f_first = list(map(lambda rid: 2020 - min(set(map(get_publication_year, get_publications_list(rid)))),
+                 ee_f))
+    math_m_first = list(map(lambda rid: 2020 - min(set(map(get_publication_year, get_publications_list(rid)))),
+                 math_m))
+    math_f_first = list(map(lambda rid: 2020 - min(set(map(get_publication_year, get_publications_list(rid)))),
+                 math_f))
+
+    fig, (bio, cs, ee, math) = plt.subplots(1, 4)
+    plt.subplots_adjust(hspace=3)
+    bio.boxplot([bio_m_first, bio_f_first], labels=['Men', 'Women'], showmeans=True)
+    bio.set_title('Biology')
+    cs.boxplot([cs_m_first, cs_f_first], labels=['Men', 'Women'], showmeans=True)
+    cs.set_title('Computer Science')
+    ee.boxplot([ee_m_first, ee_f_first], labels=['Men', 'Women'], showmeans=True)
+    ee.set_title('Electrical Engineering')
+    math.boxplot([math_m_first, math_f_first], labels=['Men', 'Women'], showmeans=True)
+    math.set_title('Math')
+    bio.set_ylabel('Publication history length')
+    plt.show()
 
 
 def claim_5():
@@ -554,6 +694,47 @@ def get_percent_true(bool_list):
         return 0.0
     else:
         return sum(bool_list) / len(bool_list)
+
+
+def claim_7_bw():
+    bio_m = list(filter(lambda rid: get_gender(rid) == 'male', bio_rids))
+    bio_f = list(filter(lambda rid: get_gender(rid) == 'female', bio_rids))
+    cs_m = list(filter(lambda rid: get_gender(rid) == 'male', cs_rids))
+    cs_f = list(filter(lambda rid: get_gender(rid) == 'female', cs_rids))
+    ee_m = list(filter(lambda rid: get_gender(rid) == 'male', ee_rids))
+    ee_f = list(filter(lambda rid: get_gender(rid) == 'female', ee_rids))
+    math_m = list(filter(lambda rid: get_gender(rid) == 'male', math_rids))
+    math_f = list(filter(lambda rid: get_gender(rid) == 'female', math_rids))
+
+    bio_m_count = list(map(lambda rids: get_percent_true(list(map(is_intramural, rids))),
+                                           get_rid_to_collaborators(bio_m).values()))
+    bio_f_count = list(map(lambda rids: get_percent_true(list(map(is_intramural, rids))),
+                                           get_rid_to_collaborators(bio_f).values()))
+    cs_m_count = list(map(lambda rids: get_percent_true(list(map(is_intramural, rids))),
+                                          get_rid_to_collaborators(cs_m).values()))
+    cs_f_count = list(map(lambda rids: get_percent_true(list(map(is_intramural, rids))),
+                                          get_rid_to_collaborators(cs_f).values()))
+    ee_m_count = list(map(lambda rids: get_percent_true(list(map(is_intramural, rids))),
+                                          get_rid_to_collaborators(ee_m).values()))
+    ee_f_count = list(map(lambda rids: get_percent_true(list(map(is_intramural, rids))),
+                                          get_rid_to_collaborators(ee_f).values()))
+    math_m_count = list(map(lambda rids: get_percent_true(list(map(is_intramural, rids))),
+                                            get_rid_to_collaborators(math_m).values()))
+    math_f_count = list(map(lambda rids: get_percent_true(list(map(is_intramural, rids))),
+                                            get_rid_to_collaborators(math_f).values()))
+
+    fig, (bio, cs, ee, math) = plt.subplots(1, 4)
+    plt.subplots_adjust(hspace=3)
+    bio.boxplot([bio_m_count, bio_f_count], labels=['Men', 'Women'], showmeans=True)
+    bio.set_title('Biology')
+    cs.boxplot([cs_m_count, cs_f_count], labels=['Men', 'Women'], showmeans=True)
+    cs.set_title('Computer Science')
+    ee.boxplot([ee_m_count, ee_f_count], labels=['Men', 'Women'], showmeans=True)
+    ee.set_title('Electrical Engineering')
+    math.boxplot([math_m_count, math_f_count], labels=['Men', 'Women'], showmeans=True)
+    math.set_title('Math')
+    bio.set_ylabel('Propensity to Collaborate Intramurally')
+    plt.show()
 
 
 def claim_7():
@@ -811,4 +992,4 @@ def claim_9():
     plt.savefig('./data/claim9.jpg')
 
 
-claim_8()
+claim_4_bw()
